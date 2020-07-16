@@ -1,0 +1,4 @@
+WIP
+
+export PKG_CACHE_PATH
+npm config set script-shell /bin/bash

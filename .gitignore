@@ -1,0 +1,25 @@
+.vscode
+.vscode/*
+
+
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.swp
+
+pids
+logs
+results
+tmp
+bin
+
+#temp files
+verificationfiles
+
+# Dependency directory
+node_modules/

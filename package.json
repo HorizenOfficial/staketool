@@ -1,0 +1,71 @@
+{
+  "name": "staketool",
+  "version": "0.1.0-a",
+  "description": "Horizen supernode stake ownerhsip verification tool",
+  "repository": "https://github.com/HorizenOfficial/staketool",
+  "homepage": "https://github.com/HorizenOfficial/staketool",
+  "bugs": {
+    "url": "https://github.com/HorizenOfficial/staketool/issues",
+    "email": "infrastructure@zensystem.io"
+  },
+  "license": "MIT",
+  "author": "Zen Blockchain Foundation <info@zensystem.io>",
+  "collaborators": [
+    {
+      "name": "Allan Dumaine",
+      "url": "https://github.com/ADumaine"
+    },
+    {
+      "name": "cronic",
+      "url": "https://github.com/cronicc"
+    },
+    {
+      "name": "horizen_infra_team",
+      "email": "infrastructure@zensystem.io",
+      "url": "https://www.npmjs.com/org/horizen"
+    }
+  ],
+  "keywords": [
+    "horizen",
+    "stake",
+    "staketool",
+    "verification"
+  ],
+  "main": "staketool.js",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "bip32": "^2.0.5",
+    "bip39": "^3.0.2",
+    "bs58check": "^2.1.2",
+    "colors": "^1.4.0",
+    "fs-extra": "^9.0.1",
+    "prompt-sync": "^4.2.0",
+    "table-layout": "^1.0.1",
+    "zencashjs": "^1.2.5"
+  },
+  "devDependencies": {
+    "eslint": "^7.4.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "lodash": "^4.17.19",
+    "npm-package-json-lint": "^5.1.0",
+    "npm-package-json-lint-config-default": "^3.0.0",
+    "pkg": "^4.4.9",
+    "shelljs": "^0.8.4"
+  },
+  "scripts": {
+    "test": "npm run lint && npm run lint:package && npm run audit:process",
+    "makestaketool-linux": "pkg ./staketool.js --targets node12-linux-x64 --out-path ./bin",
+    "makestaketool-alpine": "pkg ./staketool.js --targets node12-alpine-x64 --out-path ./bin",
+    "makestaketool-macos": "pkg ./staketool.js --targets node12-macos-x64 --out-path ./bin",
+    "makestaketool-windows": "pkg ./staketool.js --targets node12-win-x64 --out-path ./bin",
+    "makesigntxtool-linux": "pkg ./signtxtool.js --targets node12-linux-x64 --out-path ./bin",
+    "makesigntxtool-alpine": "pkg ./signtxtool.js --targets node12-alpine-x64 --out-path ./bin",
+    "makesigntxtool-macos": "pkg ./signtxtool.js --targets node12-macos-x64 --out-path ./bin",
+    "makesigntxtool-windows": "pkg ./signtxtool.js --targets node12-win-x64 --out-path ./bin",
+    "makebins": "for tool in makestaketool-{linux,alpine,macos,windows}; do npm run $tool || exit 1; done",
+    "lint": "eslint --ext .js . --quiet",
+    "lint:package": "npmPkgJsonLint .",
+    "audit:process": "( npm audit --production --json >> ./ci/scripts/report.json || true ) && ( node ./ci/scripts/audit-process.js || ([ \"$IGNORE_AUDIT\" = \"true\" ] && true ))"
+  }
+}

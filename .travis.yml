@@ -1,4 +1,60 @@
-WIP
+os:
+- linux
+- osx
+- windows
 
-export PKG_CACHE_PATH
-npm config set script-shell /bin/bash
+dist: bionic
+
+git:
+  autocrlf: false
+
+language: node_js
+node_js:
+  - lts/erbium
+
+addons:
+  homebrew:
+    packages:
+      - gnupg
+  apt:
+    packages:
+      - gnupg2
+
+services:
+  - docker
+
+cache:
+  npm: false
+  directories:
+    - "${HOME}/.pkgcache"
+
+env:
+  global:
+    - PKG_CACHE_PATH="${HOME}/.pkgcache"
+
+before_install:
+  - source ./ci/scripts/setup_environment.sh
+
+script:
+  - ./ci/scripts/script.sh
+
+after_success:
+  - ./ci/scripts/after_success.sh
+
+before_deploy:
+  - ./ci/scripts/before_deploy.sh
+
+deploy:
+  edge: true
+  provider: releases
+  draft: false
+  overwrite: true
+  token: "${GITHUB_TOKEN}"
+  release_notes: "Staketool ${TRAVIS_TAG}"
+  file_glob: true
+  file:
+    - "./bin/*.{zip,tar.gz,sha256,asc}"
+  cleanup: false
+  on:
+    tags: true
+    condition: $IS_VERIFIED_TAG = true

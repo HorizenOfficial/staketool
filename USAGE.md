@@ -7,7 +7,7 @@ $ ./staketool help
 Horizen supernode stake ownerhsip verification tool
 
 VERSION
-  staketool v0.1.0-a   linux-x64   node v12.18.1
+  staketool v0.2.0-a   linux-x64   node v12.18.1
 
 USAGE
   ./staketool [COMMAND]
@@ -35,6 +35,7 @@ OPTIONS
   -p= | --payaddress='[]'                    (required) JSON array of payaddress objects, see NOTES                                                                  
   -m= | --method=tool|zen-cli|instructions   (optional) [default: tool] method to use to create and sign the transaction, see NOTES                                  
   -o= | --outputfile=path/filename           (optional) [default: ./verificationfiles/<stakeFirst8Chars>_<satoshis>.json] override default filename or path/filename 
+  -ez= | --extrazen=zen                      (optional) an amount in zen to add to the verification transaction, see NOTES                                           
   -t  | --testnet                            (optional) use for interacting with testnet network and tracking system                                                 
   -v  | --verbose                            (optional) displays additional messages to help with troubleshooting                                                    
 
@@ -47,6 +48,9 @@ NOTES
   Method:       Option "tool" creates a raw transaction to be used by the tool (using zencashjs) and returns transaction and verification data.                                           
                 Option "zen-cli" displays a zen-cli command to run manually that creates a raw transaction to sign using the zen-cli signrawtransaction command.                          
                 Option "instructions" displays links to documentation on how to create the transaction using other methods like Sphere by Horizen or zen-cli z_sendmany.                  
+                                                                                                                                                                                          
+  Extrazen      By default the tool creates a transaction smaller than 1 zen, in some circumstances this might be lower than a minimum transaction size.                                  
+                With this option you can specifiy the minimum amount to send in the verification transaction. Must be a whole number (no decimals).                                       
 
 
 $ ./staketool help sendtxandstakeverification
@@ -143,7 +147,7 @@ $ ./signtxtool help
 Horizen supernode stake ownerhsip verification tool
 
 VERSION
-  signtxtool v0.1.0-a   linux-x64   node v12.18.1
+  signtxtool v0.2.0-a   linux-x64   node v12.18.1
 
 USAGE
   ./signtxtool [COMMAND]

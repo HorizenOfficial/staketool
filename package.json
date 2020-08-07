@@ -48,7 +48,7 @@
     "fs-extra": "^9.0.1",
     "prompt-sync": "^4.2.0",
     "table-layout": "^1.0.1",
-    "zencashjs": "^1.2.5"
+    "zencashjs": "^1.2.6"
   },
   "devDependencies": {
     "eslint": "^7.4.0",

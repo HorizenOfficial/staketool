@@ -27,7 +27,7 @@ const { config } = require('../config.js');
  * @param {object} options  individual key:values
  */
 exports.stakeVerification = async (stake, payaddress, options) => {
-  const { testnet, verbose, outputfile, method } = options;
+  const { testnet, verbose, outputfile, method, extrazen } = options;
   const isZenStake = validate.isZenAddr(stake, options);
   if (!isZenStake) return null;
   if (verbose) console.log(`VALID STAKE= ${isZenStake}`);
@@ -39,14 +39,17 @@ exports.stakeVerification = async (stake, payaddress, options) => {
   // create an object to hash
   const hashObj = { stake, payto };
   const [satoshis, hashSource] = utils.hashIt(hashObj);
-  const amount = satoshis / 100000000;
+  const amount = (satoshis / 100000000) + (extrazen || 0);
+  const satsForTx = satoshis + (extrazen * 100000000 || 0);
+
+
   if (verbose) console.log('AMT=', amount);
 
   // eslint-disable-next-line new-cap
   const buff = new Buffer.from(hashSource);
   const request = buff.toString('base64');
   const fee = testnet ? config.testnet.defaultFee : config.mainnet.defaultFee || 0.0001;
-  const stakeverifyObj = { stake, amount, satoshis, fee, request };
+  const stakeverifyObj = { stake, amount, satoshis: satsForTx, fee, request };
   if (verbose) console.log('OUTPUT CONTENTS', stakeverifyObj);
 
   // output to file

@@ -21,19 +21,28 @@ module.exports.createstake = [
   {
     command: '-s= | --stake=stakeaddress'.yellow,
     desc: '(required) stakeaddress to verify',
-  }, {
+  },
+  {
     command: '-p= | --payaddress=\'[]\''.yellow,
     desc: '(required) JSON array of payaddress objects, see NOTES',
-  }, {
+  },
+  {
     command: '-m= | --method=tool|zen-cli|instructions'.yellow,
     desc: '(optional) [default: tool] method to use to create and sign the transaction, see NOTES',
-  }, {
+  },
+  {
     command: '-o= | --outputfile=path/filename'.yellow,
     desc: '(optional) [default: ./verificationfiles/<stakeFirst8Chars>_<satoshis>.json] override default filename or path/filename',
-  }, {
+  },
+  {
+    command: '-ez= | --extrazen=zen'.yellow,
+    desc: '(optional) an amount in zen to add to the verification transaction, see NOTES',
+  },
+  {
     command: '-t  | --testnet'.yellow,
     desc: '(optional) use for interacting with testnet network and tracking system',
-  }, {
+  },
+  {
     command: '-v  | --verbose'.yellow,
     desc: '(optional) displays additional messages to help with troubleshooting',
   },
@@ -69,8 +78,17 @@ module.exports.createstakeNotes = [
   {
     command: '',
     desc: 'Option "instructions" displays links to documentation on how to create the transaction '
-      + 'using other methods like Sphere by Horizen or zen-cli z_sendmany.',
+    + 'using other methods like Sphere by Horizen or zen-cli z_sendmany.',
   },
+  {
+    command: '',
+    desc: '',
+  },
+  {
+    command: 'Extrazen',
+    desc: 'By default the tool creates a transaction smaller than 1 zen, in some circumstances this might be lower than a minimum transaction size.',
+  },
+  { desc: 'With this option you can specifiy the minimum amount to send in the verification transaction. Must be a whole number (no decimals).' },
 ];
 
 

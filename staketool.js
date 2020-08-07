@@ -49,7 +49,8 @@ let valErrors = '';
 switch (command) {
   case 'createstakeverification': { // Step 1a & 1b
     let issue;
-    const allowed = ['-s', '-p', '-m', '-o', '-t', '-v', '--stake', '--payaddress', '--method', '--outputfile', '--testnet', '--verbose'];
+    let extrazen;
+    const allowed = ['-s', '-p', '-m', '-o', '-t', '-v', '-ez', '--stake', '--payaddress', '--method', '--outputfile', '--testnet', '--verbose', '--extrazen'];
     for (let i = 0; i < process.argv.length; i++) {
       const val = process.argv[i].split('=');
       if (i > 2 && verbose) displayArg(val);
@@ -63,6 +64,7 @@ switch (command) {
       if (val[0] === '-m' || val[0] === '--method') method = val[1];
       if (val[0] === '-o' || val[0] === '--outputfile') outputfile = val[1];
       if (val[0] === '-t' || val[0] === '--testnet') testnet = true;
+      if (val[0] === '-ez' || val[0] === '--extrazen') extrazen = Number(val[1]);
     }
     if (issue) break;
 
@@ -74,6 +76,10 @@ switch (command) {
     if (!stake) valErrors += 'Missing stake.';
     if (!payaddress) valErrors += ' Missing payaddress.';
     if (method && (method !== 'instructions' && method !== 'tool' && method !== 'zen-cli')) valErrors += '  Method unknown.';
+    if (extrazen) {
+      if (!Number.isInteger(extrazen)) valErrors += ' --extrazen must be a whole number (no decimals).';
+      if (extrazen === 0) valErrors += ' --extrazen must be a whole number greater than 0.';
+    }
     if (valErrors.length > 1) {
       console.log(`Errors found. Exiting. ${valErrors}  For command help: staketool createstakeverification help`.red);
       break;
@@ -86,7 +92,7 @@ switch (command) {
       try {
         // returns an object with amount and filepath
         let txresult;
-        const result = await steps.stakeVerification(stake, payaddress, { testnet, verbose, outputfile, method });
+        const result = await steps.stakeVerification(stake, payaddress, { testnet, verbose, outputfile, method, extrazen });
         if (verbose) console.log('stakeverification= ', result);
         if (result.issue) throw new Error(`ISSUE ${result.issue}`);
         if (method === 'zen-cli' || method === 'tool') {

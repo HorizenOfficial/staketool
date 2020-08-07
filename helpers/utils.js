@@ -21,7 +21,7 @@ exports.hashIt = (hashObj) => {
   let i = 1;
   while (satoshis < 10000) {
     if (i > 1) console.log(`We hashed ${i} times without a result which is very rare, you should play the lottery.`);
-    if (i > 10) break;
+    if (i > 10) throw new Error('Unable to hash the request properly.');
     hash = crypto.createHash('sha256').update(hash).digest('hex');
     satoshis = parseInt(parseInt(hash.slice(-8), 16).toString(10).slice(0, 6), 10);
     i++;

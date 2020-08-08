@@ -48,6 +48,13 @@ exports.checkPayaddress = (payaddress, options) => {
     console.log('Too many payto addresses. Limit is 5');
     return false;
   }
+  if (payto.length > 1) {
+    const addresses = payto.map((pto) => pto.address);
+    if (new Set(addresses).size !== addresses.length) {
+      console.log('Duplicate payto addresses found.');
+      return false;
+    }
+  }
 
   // check each address and total
   let total = 0;

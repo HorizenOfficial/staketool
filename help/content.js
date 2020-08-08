@@ -85,7 +85,7 @@ module.exports.createstakeNotes = [
     desc: '',
   },
   {
-    command: 'Extrazen',
+    command: 'Extrazen:',
     desc: 'By default the tool creates a transaction smaller than 1 zen, in some circumstances this might be lower than a minimum transaction size.',
   },
   { desc: 'With this option you can specifiy the minimum amount to send in the verification transaction. Must be a whole number (no decimals).' },

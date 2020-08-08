@@ -49,7 +49,7 @@ NOTES
                 Option "zen-cli" displays a zen-cli command to run manually that creates a raw transaction to sign using the zen-cli signrawtransaction command.                          
                 Option "instructions" displays links to documentation on how to create the transaction using other methods like Sphere by Horizen or zen-cli z_sendmany.                  
                                                                                                                                                                                           
-  Extrazen      By default the tool creates a transaction smaller than 1 zen, in some circumstances this might be lower than a minimum transaction size.                                  
+  Extrazen:     By default the tool creates a transaction smaller than 1 zen, in some circumstances this might be lower than a minimum transaction size.                                  
                 With this option you can specifiy the minimum amount to send in the verification transaction. Must be a whole number (no decimals).                                       
 
 

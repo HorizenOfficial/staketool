@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const axios = require('axios').default;
+const axiosPost = require('axios').default;
 const zencashjs = require('zencashjs');
 const { config } = require('../config.js');
 
@@ -74,7 +75,7 @@ exports.findVOUTS = (utxos, amtSatoshis, options) => {
     const need = Number(((amtSatoshis / 100000000) - bal).toFixed(8));
     return { issue: 'Insufficient funds. ', bal, need };
   }
-  if (utxos.length === 1 && utxos[0].satoshis >= amtSatoshis  && utxos[0].scriptPubKey.length > 50) {
+  if (utxos.length === 1 && utxos[0].satoshis >= amtSatoshis && utxos[0].scriptPubKey.length > 50) {
     if (utxos[0].confirmations < 1) return { issue: 'Funds found but must have at least 1 block confirmation. Rerun after next block.' };
     // sort below skips if only one utxo
     unspent.push({ txid: utxos[0].txid, vout: utxos[0].vout, scriptPubKey: utxos[0].scriptPubKey });
@@ -82,7 +83,7 @@ exports.findVOUTS = (utxos, amtSatoshis, options) => {
     return { unspent, sum, sumSatoshis: utxos[0].satoshis };
   }
   // filter out coinbase zen
-  noncoinbase = utxos.filter((u) => u.scriptPubKey.length > 50);
+  const noncoinbase = utxos.filter((u) => u.scriptPubKey.length > 50);
 
   // check for a single vout less than 0.1 while sorting
   noncoinbase.sort((a, b) => {
@@ -190,26 +191,26 @@ exports.sendVerification = async (apikey, verification, testnet) => {
   if (process.env.DEVSERVER) url = process.env.DEVSERVER;
 
   return axios.head(url, { timeout: 8000, maxRedirects: 0 })
-  .then((response) => response.data)
-  .catch((error) => {
-    // axios turns a redirect POST into GET. Resubmit.
-    // head request will error with 302. Use server returned.
-    if (error.response.status === 302) {
-      const resUrl = `${error.response.headers.location}api/stake/verify`;
-      const data = { ...verification };
-      data.key = apikey;
-      return axiosPost.post(resUrl, data, { timeout: 8000 })
-        .then((response) => response.data)
-        .catch((err) => {
-          const servermsg = err.response && err.response.data ? err.response.data.message : err.message;
-          const msg = `sending verification request. error:${servermsg || err}`;
-          return { issue: msg };
-        });
-    }
-    const servermsg = error.response && error.response.data ? error.response.data.message : error.message;
-    const msg = `sending verification request. error:${servermsg || error}`;
-    return { issue: msg };
-  });
+    .then((response) => response.data)
+    .catch((error) => {
+      // axios turns a redirect POST into GET. Resubmit.
+      // head request will error with 302. Use server returned.
+      if (error.response.status === 302) {
+        const resUrl = `${error.response.headers.location}api/stake/verify`;
+        const data = { ...verification };
+        data.key = apikey;
+        return axiosPost.post(resUrl, data, { timeout: 8000 })
+          .then((response) => response.data)
+          .catch((err) => {
+            const servermsg = err.response && err.response.data ? err.response.data.message : err.message;
+            const msg = `sending verification request. error:${servermsg || err}`;
+            return { issue: msg };
+          });
+      }
+      const servermsg = error.response && error.response.data ? error.response.data.message : error.message;
+      const msg = `sending verification request. error:${servermsg || error}`;
+      return { issue: msg };
+    });
 };
 
 // //////////////////////////////////////////

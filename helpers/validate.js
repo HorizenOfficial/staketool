@@ -64,8 +64,8 @@ exports.checkPayaddress = (payaddress, options) => {
     const { address, pct } = payto[i];
     const isAddrZen = this.isZenAddr(address, options);
     if (!isAddrZen) return false;
-    if (pct < 0.01) {
-      console.log(`Minimum pct is 0.01. ${address} is set to ${pct}`);
+    if (pct < 0.1) {
+      console.log(`Minimum pct is 0.10  ${address} is set to ${pct}`);
       return false;
     }
 

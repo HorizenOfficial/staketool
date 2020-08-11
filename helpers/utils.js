@@ -185,16 +185,28 @@ exports.sendSignedTx = async (signedTx, testnet) => {
 exports.sendVerification = async (apikey, verification, testnet) => {
   let url = testnet ? config.testnet.server : config.mainnet.server;
   if (process.env.DEVSERVER) url = process.env.DEVSERVER;
-  url += '/api/stake/verify';
-  const data = { ...verification };
-  data.key = apikey;
-  return axios.post(url, data, { timeout: 28000 })
-    .then((response) => response.data)
-    .catch((error) => {
-      const servermsg = error.response && error.response.data ? error.response.data.message : error.message;
-      const msg = `sending verification request. error:${servermsg || error}`;
-      return { issue: msg };
-    });
+  
+  return axios.head(url, { timeout: 8000, maxRedirects: 0 })
+  .then((response) => response.data)
+  .catch((error) => {
+    // axios turns a redirect POST into GET. Resubmit.
+    // head request will error with 302. Use server returned.
+    if (error.response.status === 302) {
+      const resUrl = `${error.response.headers.location}api/stake/verify`;
+      const data = { ...verification };
+      data.key = apikey;
+      return axiosPost.post(resUrl, data, { timeout: 8000 })
+        .then((response) => response.data)
+        .catch((err) => {
+          const servermsg = err.response && err.response.data ? err.response.data.message : err.message;
+          const msg = `sending verification request. error:${servermsg || err}`;
+          return { issue: msg };
+        });
+    }
+    const servermsg = error.response && error.response.data ? error.response.data.message : error.message;
+    const msg = `sending verification request. error:${servermsg || error}`;
+    return { issue: msg };
+  });
 };
 
 // //////////////////////////////////////////

@@ -176,7 +176,7 @@ switch (command) {
         }
         const resultSendVer = await steps.sendVerification(apikey, stakeObj, inputfile, { outputfile, testnet, verbose });
         if (resultSendVer.issue) throw new Error(`ISSUE ${resultSendVer.issue}`);
-        console.log(resultSendVer.msg);
+        console.log(`${resultSendVer.msg} ${resultSendVer.status ? `Status: ${resultSendVer.status}` : ''}`);
       } catch (error) {
         console.log(ERROR_DETAILS ? error : error.message.red);
       }

@@ -41,7 +41,6 @@ const displayArg = (val) => {
   console.log(`ARG ${val[0]} = ${status}`);
 };
 
-let method;
 let outputfile;
 let testnet;
 let inputfile;

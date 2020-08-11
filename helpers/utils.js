@@ -69,20 +69,23 @@ exports.findVOUTS = (utxos, amtSatoshis, options) => {
   if (utxos.length === 0) {
     return { issue: 'Insufficient funds. ', bal: 0, need: (amtSatoshis / 100000000) };
   }
-  if (utxos.length === 1 && utxos[0].satoshis < amtSatoshis) {
+  if (utxos.length === 1 && utxos[0].satoshis < amtSatoshis && utxos[0].scriptPubKey.length > 50) {
     const bal = utxos[0].satoshis / 100000000;
     const need = Number(((amtSatoshis / 100000000) - bal).toFixed(8));
     return { issue: 'Insufficient funds. ', bal, need };
   }
-  if (utxos.length === 1 && utxos[0].satoshis >= amtSatoshis) {
+  if (utxos.length === 1 && utxos[0].satoshis >= amtSatoshis  && utxos[0].scriptPubKey.length > 50) {
     if (utxos[0].confirmations < 1) return { issue: 'Funds found but must have at least 1 block confirmation. Rerun after next block.' };
     // sort below skips if only one utxo
     unspent.push({ txid: utxos[0].txid, vout: utxos[0].vout, scriptPubKey: utxos[0].scriptPubKey });
     const sum = utxos[0].satoshis / 100000000;
     return { unspent, sum, sumSatoshis: utxos[0].satoshis };
   }
+  // filter out coinbase zen
+  noncoinbase = utxos.filter((u) => u.scriptPubKey.length > 50);
+
   // check for a single vout less than 0.1 while sorting
-  utxos.sort((a, b) => {
+  noncoinbase.sort((a, b) => {
     if (a.satoshis > amtSatoshis && a.satoshis < pointone && a.confirmation > 0) lucky = a;
     return a.satoshis - b.satoshis;
   });
@@ -96,10 +99,10 @@ exports.findVOUTS = (utxos, amtSatoshis, options) => {
   // start accumulating
   let sumSats = 0;
   let i = 0;
-  while (sumSats < amtSatoshis && i < utxos.length) {
-    if (utxos[i].confirmations > 0) {
-      unspent.push({ txid: utxos[i].txid, vout: utxos[i].vout, scriptPubKey: utxos[i].scriptPubKey });
-      sumSats += utxos[i].satoshis;
+  while (sumSats < amtSatoshis && i < noncoinbase.length) {
+    if (noncoinbase[i].confirmations > 0) {
+      unspent.push({ txid: noncoinbase[i].txid, vout: noncoinbase[i].vout, scriptPubKey: noncoinbase[i].scriptPubKey });
+      sumSats += noncoinbase[i].satoshis;
     }
     i++;
   }
@@ -185,7 +188,7 @@ exports.sendSignedTx = async (signedTx, testnet) => {
 exports.sendVerification = async (apikey, verification, testnet) => {
   let url = testnet ? config.testnet.server : config.mainnet.server;
   if (process.env.DEVSERVER) url = process.env.DEVSERVER;
-  
+
   return axios.head(url, { timeout: 8000, maxRedirects: 0 })
   .then((response) => response.data)
   .catch((error) => {

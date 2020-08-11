@@ -51,7 +51,7 @@ module.exports.createstake = [
 module.exports.createstakeNotes = [
   {
     command: 'Payaddress:',
-    desc: 'The addresses in --payaddress need to be 1 to 5 valid transparent zen addresses. The sum of all "pct" needs to equal 1. A payaddress can be'
+    desc: 'The addresses in --payaddress need to be 1 to 5 valid transparent zen addresses. The sum of all "pct" needs to equal 100.00. A payaddress can be'
       + ' the same as the stakeaddress.',
   },
   {
@@ -60,8 +60,8 @@ module.exports.createstakeNotes = [
   },
   {
     command: '',
-    desc: 'Example:--payaddress=\'[{"address":"ztcXfXAdPoDtyBJhzNmC3DzUkq3r22phsbt","pct":0.6666},'
-      + '{"address":"zrFzxutppvxEdjyu4QNjogBMjtC1py9Hp1S","pct":0.3334}]\'',
+    desc: 'Example:--payaddress=\'[{"address":"ztcXfXAdPoDtyBJhzNmC3DzUkq3r22phsbt","pct":66.66},'
+      + '{"address":"zrFzxutppvxEdjyu4QNjogBMjtC1py9Hp1S","pct":33.34}]\'',
   },
   {
     command: '',

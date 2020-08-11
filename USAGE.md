@@ -41,9 +41,9 @@ OPTIONS
 
 
 NOTES
-  Payaddress:   The addresses in --payaddress need to be 1 to 5 valid transparent zen addresses. The sum of all "pct" needs to equal 1. A payaddress can be the same as the stakeaddress. 
+  Payaddress:   The addresses in --payaddress need to be 1 to 5 valid transparent zen addresses. The sum of all "pct" needs to equal 100.00. A payaddress can be the same as the stakeaddress. 
                 Some platforms may not need to have quotes escaped or may not have to encapsulate the array in single quotes.                                                             
-                Example:--payaddress='[{"address":"ztcXfXAdPoDtyBJhzNmC3DzUkq3r22phsbt","pct":0.6666},{"address":"zrFzxutppvxEdjyu4QNjogBMjtC1py9Hp1S","pct":0.3334}]'                    
+                Example:--payaddress='[{"address":"ztcXfXAdPoDtyBJhzNmC3DzUkq3r22phsbt","pct":66.66},{"address":"zrFzxutppvxEdjyu4QNjogBMjtC1py9Hp1S","pct":33.34}]'                    
                                                                                                                                                                                           
   Method:       Option "tool" creates a raw transaction to be used by the tool (using zencashjs) and returns transaction and verification data.                                           
                 Option "zen-cli" displays a zen-cli command to run manually that creates a raw transaction to sign using the zen-cli signrawtransaction command.                          

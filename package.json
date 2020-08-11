@@ -45,6 +45,7 @@
     "bip39": "^3.0.2",
     "bs58check": "^2.1.2",
     "colors": "^1.4.0",
+    "decimal.js-light": "^2.5.0",
     "fs-extra": "^9.0.1",
     "prompt-sync": "^4.2.0",
     "table-layout": "^1.0.1",

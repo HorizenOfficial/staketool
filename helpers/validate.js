@@ -77,7 +77,7 @@ exports.checkPayaddress = (payaddress, options) => {
     // in case there are trailing 0s or pct is a string, replace with number
     payto[i].pct = pctDec.toNumber();
 
-    total = new Decimal(total).plus(pctDec);
+    total = total.plus(pctDec);
   }
   if (!total.eq(100.00)) {
     console.log(`The total pct must equal 100.00 Total= ${total.toDecimalPlaces(2).toNumber()}`);

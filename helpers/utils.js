@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 const axios = require('axios').default;
-const axiosPost = require('axios').default;
 const zencashjs = require('zencashjs');
 const { config } = require('../config.js');
 
@@ -195,11 +194,12 @@ exports.sendVerification = async (apikey, verification, testnet) => {
     .catch((error) => {
       // axios turns a redirect POST into GET. Resubmit.
       // head request will error with 302. Use server returned.
-      if (error.response.status === 302) {
-        const resUrl = `${error.response.headers.location}api/stake/verify`;
+      if ((error.response.status === 301 || error.response.status === 302) && error.response.headers.location) {
+        const srv = error.response.headers.location;
+        const resUrl = `${srv.endsWith('/') ? srv : `${srv}/`}api/stake/verify`;
         const data = { ...verification };
         data.key = apikey;
-        return axiosPost.post(resUrl, data, { timeout: 8000 })
+        return axios.post(resUrl, data, { timeout: 8000 })
           .then((response) => response.data)
           .catch((err) => {
             const servermsg = err.response && err.response.data ? err.response.data.message : err.message;

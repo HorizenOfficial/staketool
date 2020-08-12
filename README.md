@@ -57,9 +57,9 @@ The `--payaddress` argument data must be valid JSON and consist of one to five '
 #### Step 2. Sign the ZEN Transaction
 Command line:
 
-`./signtxtool signverificationtransaction --privkey=privateKeyWIF`
+`./signtxtool signverificationtransaction --privkey=cQ3iBWAa2BwNCAjBWPMRryuib3QbfYwbfhbB8dpJnKShowfXp43x`
 
-This step may be completed on an air gapped system by copying the `./verificationfiles` folder created in Step 1. Copy the files back to the first system and replace them once the transaction is signed.
+This step may be completed on an air gapped system by copying the `./verificationfiles` folder created in Step 1. Copy the files back to the first system and replace the originals once the transaction is signed.
 
 The private key can be provided using the `--privkey` argument, or by exporting the `PRIVKEY=privateKeyWIF` environment variable. If neither is used, the tool will prompt to input the private key.
 
@@ -72,7 +72,7 @@ This step should result in a status message from the Super Node tracking server.
 
 
 #### Assigning a Stake Address to a Node
-Once a stake address is verified it can be used to register a new Super Node or to reconfigure an existing Super Node. The `"email":`, `"stakeaddr":` and `"category":` fields in the node's `config.json` file have to match the values of the API sub key that was used to submit the verification request.
+Once a stake address is verified it can be used to register a new Super Node or to reconfigure an existing Super Node. The `"email":`, `"stakeaddr":` and `"category":` fields in the node's `config.json` file have to match the values of the API sub key that was used to submit the verification request. For detailed instructions on changing a stake address see https://horizenofficial.atlassian.net/wiki/spaces/ZEN/pages/136872049/Change+Staking+Address.
 
 #### Changing 'payto' Information of a Verified Address
 Rerun Steps 1-3 with the same stake address but provide different 'payto' addresses or percentages. After successful verification the new 'payto' addresses will be used starting from the next payment period. 
@@ -89,7 +89,7 @@ npm run makebins # package stand alone binaries for all platforms, output in ./b
 ```
 
 #### Testing
-For development and testing of integrations, staketool can be used with the testnet tracking servers at https://securenodes.testnet.zensystem.io. To do so please use testnet addresses and private keys, and use the `--testnet` switch with staketool and signtool.
+For development and testing of integrations, staketool can be used with the testnet tracking servers at https://securenodes.testnet.zensystem.io. To do so please use testnet addresses and private keys, and use the `--testnet` switch with staketool and signtxtool.
 
 Testnet ZEN can be requested at https://testnet.getzen.cash, testnet addresses and private keys can be generated at https://myzenwallet.io by selecting 'testnet' in Settings.
 
@@ -101,7 +101,7 @@ The reference implementation of creating the `hashobj` can be found in [helpers/
 
 The reference implementation of the algorithm deriving the amount in satoshis from the `hashobj` can be found in [helpers/utils.js#L17-L30](https://github.com/HorizenOfficial/staketool/blob/master/helpers/utils.js#L17-L30)
 
-The `hashobj` is submitted to the tracking servers, the amount in satoshis is calculated again and compared to the on-chain verification transaction. Only the last 8 digits of the satoshi value are compared. To make preserving of JSON element order easier `hashobj` is base64 encoded, the reference implementation sending a verification POST request to the tracking server API at https://supernodes${number}.${region}.zensystem.io/api/stake/verify can be found in [helpers/steps.js#L219-L238](https://github.com/HorizenOfficial/staketool/blob/master/helpers/steps.js#L219-L238) and [helpers/utils.js#L182-L214](https://github.com/HorizenOfficial/staketool/blob/master/helpers/utils.js#L182-L214).
+The `hashobj` is submitted to the tracking servers, the amount in satoshis is calculated again and compared to the on-chain verification transaction. Only the last 8 digits of the satoshi value are compared. To make preserving of JSON element order easier `hashobj` is base64 encoded, the reference implementation sending a verification POST request to the tracking server API at https://supernodes1.eu.zensystem.io/api/stake/verify can be found in [helpers/steps.js#L219-L238](https://github.com/HorizenOfficial/staketool/blob/master/helpers/steps.js#L219-L238) and [helpers/utils.js#L182-L214](https://github.com/HorizenOfficial/staketool/blob/master/helpers/utils.js#L182-L214).
 
 [david-img]: https://david-dm.org/HorizenOfficial/staketool.svg?style=flat-square
 [david-url]: https://david-dm.org/HorizenOfficial/staketool

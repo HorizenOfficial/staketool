@@ -1,4 +1,5 @@
 const bs58check = require('bs58check');
+const Decimal = require('decimal.js-light');
 
 const regexZenAddr = /^[z][a-km-zA-HJ-NP-Z1-9]{26,36}$/;
 
@@ -34,13 +35,14 @@ exports.isZenAddr = (addr, options) => {
  */
 
 exports.checkPayaddress = (payaddress, options) => {
+  const { verbose } = options;
   let payto;
   try {
     payto = JSON.parse(payaddress);
   } catch (error) {
     console.log(error.message);
-    console.log('The quotes in payaddress may need to be escaped or start/end with different quote. Examples: '
-    + `'${'[\\"amount\\"...]'}' or "${'[\\"amount\\"....]'}"`);
+    console.log('The quotes in payaddress may need to be escaped or start/end with a different quote. Examples: '
+      + `'${'[\\"amount\\"...]'}' or "${'[\\"amount\\"....]'}"`);
     return false;
   }
   if (!Array.isArray(payto)) throw new Error('The payaddress is not formatted properly.');
@@ -48,22 +50,40 @@ exports.checkPayaddress = (payaddress, options) => {
     console.log('Too many payto addresses. Limit is 5');
     return false;
   }
+  if (payto.length > 1) {
+    const addresses = payto.map((pto) => pto.address);
+    if (new Set(addresses).size !== addresses.length) {
+      console.log('Duplicate payto addresses found.');
+      return false;
+    }
+  }
 
   // check each address and total
-  let total = 0;
+  let total = new Decimal(0);
   for (let i = 0; i < payto.length; i++) {
     const { address, pct } = payto[i];
     const isAddrZen = this.isZenAddr(address, options);
     if (!isAddrZen) return false;
+    if (pct < 0.1) {
+      console.log(`Minimum pct is 0.10  ${address} is set to ${pct}`);
+      return false;
+    }
 
-    if (typeof pct === 'string') payto[i].pct = Number(pct);
-    total += payto[i].pct;
+    const pctDec = new Decimal(pct);
+    if (pctDec.dp() > 2) {
+      console.log(`Payaddress pct may only have 2 decimal places. Found ${pct} for ${address}`);
+      return false;
+    }
+    // in case there are trailing 0s or pct is a string, replace with number
+    payto[i].pct = pctDec.toNumber();
+
+    total = total.plus(pctDec);
   }
-  if (total !== 1) {
-    console.log(`the total pct must equal 1. Total= ${total}`);
+  if (!total.eq(100.00)) {
+    console.log(`The total pct must equal 100.00 Total= ${total.toDecimalPlaces(2).toNumber()}`);
     return false;
   }
-
   payto.sort((a, b) => ((a.address > b.address) ? 1 : -1));
+  if (verbose) console.log(`PAYADDRESS: ${JSON.stringify(payto)}`);
   return payto;
 };

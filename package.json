@@ -1,6 +1,6 @@
 {
   "name": "staketool",
-  "version": "0.2.0-a",
+  "version": "1.0.0",
   "description": "Horizen supernode stake ownerhsip verification tool",
   "repository": "https://github.com/HorizenOfficial/staketool",
   "homepage": "https://github.com/HorizenOfficial/staketool",
@@ -45,6 +45,7 @@
     "bip39": "^3.0.2",
     "bs58check": "^2.1.2",
     "colors": "^1.4.0",
+    "decimal.js-light": "^2.5.0",
     "fs-extra": "^9.0.1",
     "prompt-sync": "^4.2.0",
     "table-layout": "^1.0.1",

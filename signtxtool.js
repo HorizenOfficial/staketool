@@ -41,7 +41,6 @@ const displayArg = (val) => {
   console.log(`ARG ${val[0]} = ${status}`);
 };
 
-let method;
 let outputfile;
 let testnet;
 let inputfile;
@@ -68,13 +67,14 @@ switch (command) {
     }
     if (issue) break;
     valErrors = '';
-    if (method === 'zen-cli') {
-      valErrors += 'Please run the zen-cli instructions displayed in step 1 (command = createstakeverification). ';
-    } else if (!privkey) {
-      privkey = prompt('Enter private key: ');
-    } else if (process.env.PRIVKEY) {
-      privkey = process.env.PRIVKEY;
-    } else {
+    if (!privkey) {
+      if (process.env.PRIVKEY) {
+        privkey = process.env.PRIVKEY;
+      } else {
+        privkey = prompt('Enter private key: ');
+      }
+    }
+    if (!privkey) {
       valErrors += 'Missing private key. ';
     }
 

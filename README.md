@@ -107,7 +107,7 @@ The `hashobj` is submitted to the tracking servers, the amount in satoshis is ca
 [david-url]: https://david-dm.org/HorizenOfficial/staketool
 [license-img]: https://img.shields.io/badge/license-MIT-green.svg?style=flat-square
 [license-url]: LICENSE
-[travis-img]: https://img.shields.io/travis/HorizenOfficial/staketool.svg?style=flat-square
-[travis-url]: https://travis-ci.org/HorizenOfficial/staketool.svg?branch=master
+[travis-img]: https://img.shields.io/travis/com/HorizenOfficial/staketool/master
+[travis-url]: https://travis-ci.com/github/HorizenOfficial/staketool
 [release-img]: https://img.shields.io/github/v/release/HorizenOfficial/staketool
 [release-url]: https://github.com/HorizenOfficial/staketool/releases/latest

@@ -14,8 +14,7 @@ exports.isZenAddr = (addr, options) => {
   try {
     prefix = bs58check.decode(addr).toString('hex').slice(0, 4);
   } catch (err) {
-    // throw new Error(`invalid address: ${err.message}`);
-    return false;
+    throw new Error(`bad address: ${addr}. ${err.message}`);
   }
 
   if (!testnet && !((prefix === '2089' || prefix === '2096'))) {

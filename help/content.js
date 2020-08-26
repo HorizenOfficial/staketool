@@ -95,7 +95,7 @@ module.exports.createstakeNotes = [
 module.exports.sendtx = [
   {
     command: '-a= | --apikey=apisubkey'.yellow,
-    desc: '(required) a Super Node API sub key, optionally environment variable APIKEY can be used instead',
+    desc: '(required) a Super Node API sub key. Environment variable APIKEY can be used instead.',
   },
   {
     command: '-i= | --inputfile=path/filename'.yellow,
@@ -155,19 +155,19 @@ module.exports.sendtxNotes = [
 module.exports.liststakes = [
   {
     command: '-a= | --apikey=apisubkey'.yellow,
-    desc: '(required) a Super Node API sub key, optionally environment variable APIKEY can be used instead',
+    desc: '(required) a Super Node API sub key. Environment variable APIKEY can be used instead.',
   },
   {
     command: '-s= | --stake=stakeaddress'.yellow,
     desc: '(optional) filter by single stakeaddress',
   },
   {
-    command: '-st=| --status=verified|pending'.yellow,
+    command: '-st=| --status=confirming|verified|expired|replaced|failed|all'.yellow,
     desc: '(optional) filter by status',
   },
   {
     command: '-f= | --format=json|list'.yellow,
-    desc: '(optional) [default: json] format the output, displays either JSON or a list of one stake and status per console line',
+    desc: '(optional) [default: json] format the output. Displays either JSON or a list of one stake with details per console line',
   },
   {
     command: '-t  | --testnet'.yellow,
@@ -180,7 +180,7 @@ module.exports.liststakes = [
 ];
 
 module.exports.liststakesNotes = [
-  { desc: 'No optional arguments returns list of all verified stakes' },
+  { desc: 'Default is a list of all confirming, verified, and active stakes.  Also includes payto addresses and node ids with FQDNS (once configured).' },
 ];
 
 module.exports.getbalance = [
@@ -190,7 +190,7 @@ module.exports.getbalance = [
   },
   {
     command: '-t  | --testnet'.yellow,
-    desc: '(optional) use for interacting with testnet network and tracking system',
+    desc: '(optional) use for interacting with testnet network',
   },
   {
     command: '-v  | --verbose'.yellow,

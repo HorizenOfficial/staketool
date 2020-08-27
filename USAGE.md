@@ -7,7 +7,7 @@ $ ./staketool help
 Horizen supernode stake ownerhsip verification tool
 
 VERSION
-  staketool v1.0.0   linux-x64   node v12.18.1
+  staketool v1.1.0   linux-x64   node v12.18.1
 
 USAGE
   ./staketool [COMMAND]
@@ -64,7 +64,7 @@ DESCRIPTION
   Broadcasts the verification transaction to the blockchain and the verification request to the tracking server 
 
 OPTIONS
-  -a= | --apikey=apisubkey            (required) a Super Node API sub key, optionally environment variable APIKEY can be used instead                                                         
+  -a= | --apikey=apisubkey            (required) a Super Node API sub key. Environment variable APIKEY can be used instead.                                                                   
   -i= | --inputfile=path/filename     (optional) [default: ./verificationfiles/<stakeFirst8Chars>_<satoshis>.json] override default input file from previous steps                            
   -s= | --signedtxhex=mysignedtxhex   (optional) [default: parsed from inputfile] hexadecimal signed serialized raw transaction, this is the output from a zen-cli signrawtransaction command 
   -tx=| --txid=transactionidhex       (optional) the transaction id of a signed transaction that has already been broadcasted to the network                                                  
@@ -100,16 +100,16 @@ DESCRIPTION
   List stakeaddresses and their verification status 
 
 OPTIONS
-  -a= | --apikey=apisubkey          (required) a Super Node API sub key, optionally environment variable APIKEY can be used instead                       
-  -s= | --stake=stakeaddress        (optional) filter by single stakeaddress                                                                              
-  -st=| --status=verified|pending   (optional) filter by status                                                                                           
-  -f= | --format=json|list          (optional) [default: json] format the output, displays either JSON or a list of one stake and status per console line 
-  -t  | --testnet                   (optional) use for interacting with testnet network and tracking system                                               
-  -v  | --verbose                   (optional) displays additional messages to help with troubleshooting                                                  
+  -a= | --apikey=apisubkey                                         (required) a Super Node API sub key. Environment variable APIKEY can be used instead.                                   
+  -s= | --stake=stakeaddress                                       (optional) filter by single stakeaddress                                                                                
+  -st=| --status=confirming|verified|expired|replaced|failed|all   (optional) filter by status                                                                                             
+  -f= | --format=json|list                                         (optional) [default: json] format the output. Displays either JSON or a list of one stake with details per console line 
+  -t  | --testnet                                                  (optional) use for interacting with testnet network and tracking system                                                 
+  -v  | --verbose                                                  (optional) displays additional messages to help with troubleshooting                                                    
 
 
 NOTES
-  No optional arguments returns list of all verified stakes 
+  Default is a list of all confirming, verified, and active stakes.  Also includes payto addresses and node ids with FQDNS (once configured). 
 
 
 $ ./staketool help getbalance
@@ -123,9 +123,9 @@ DESCRIPTION
   Display confirmed balance of an address 
 
 OPTIONS
-  -s= | --stake=stakeaddress   (required) the stakeaddress to show the balance of                      
-  -t  | --testnet              (optional) use for interacting with testnet network and tracking system 
-  -v  | --verbose              (optional) displays additional messages to help with troubleshooting    
+  -s= | --stake=stakeaddress   (required) the stakeaddress to show the balance of                   
+  -t  | --testnet              (optional) use for interacting with testnet network                  
+  -v  | --verbose              (optional) displays additional messages to help with troubleshooting 
 
 
 
@@ -147,7 +147,7 @@ $ ./signtxtool help
 Horizen supernode stake ownerhsip verification tool
 
 VERSION
-  signtxtool v1.0.0   linux-x64   node v12.18.1
+  signtxtool v1.1.0   linux-x64   node v12.18.1
 
 USAGE
   ./signtxtool [COMMAND]

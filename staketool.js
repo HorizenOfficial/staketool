@@ -93,8 +93,9 @@ switch (command) {
         // returns an object with amount and filepath
         let txresult;
         const result = await steps.stakeVerification(stake, payaddress, { testnet, verbose, outputfile, method, extrazen });
-        if (verbose) console.log('stakeverification= ', result);
+        if (!result) throw new Error(`stake verification did not complete properly for ${stake}`);
         if (result.issue) throw new Error(`ISSUE ${result.issue}`);
+        if (verbose) console.log('stakeverification= ', result);
         if (method === 'zen-cli' || method === 'tool') {
           txresult = await steps.buildTx(result, method, { testnet, outputfile, verbose });
           if (verbose) console.log('verificationtransaction= ', txresult);
@@ -230,10 +231,12 @@ switch (command) {
         if (format) {
           if (format === 'list') {
             result.forEach((addr) => {
-              let msg = `${addr.stkaddr} status=${addr.status} created=${addr.createdAt}`;
+              console.log('');
+              let msg = `${addr.stkaddr} status=${addr.status} created=${addr.createdAt} id=${addr.id} txid=${addr.txid}`;
               if (addr.status === 'failed') msg += ` reason=${addr.failreason}`;
               if (addr.status === 'replaced') msg += ` replaced=${addr.replacedAt}`;
-              if (addr.paytos) addr.paytos.forEach((p, idx, a) => { msg += ` payto=${p.payto} pct=${p.pct}${idx < a.length - 1 ? ',' : ''} `; return null; });
+              if (addr.paytos) addr.paytos.forEach((p) => { msg += ` payto=${p.payto} pct=${p.pct} `; return null; });
+              if (addr.nodes) msg += ` nodes=${addr.nodes.map((n) => n.id).join(',')}`;
               console.log(msg);
             });
           } else {

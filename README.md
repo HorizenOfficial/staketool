@@ -38,12 +38,12 @@ Notes:
 
 ### General Steps
 The Stake Verification Tool has three general steps to complete the verification process:
-1. Create a stake verification request and a ZEN transaction.
+1. Create a stake verification request and a ZEN transaction for the specified amount.
 2. Sign the transaction. This step can be done offline.
 3. Send the transaction to the blockchain and the verification request to the Super Node tracking servers.
 
 ### Stake Tool Example
-The tool has the flexibility to complete the verification process in multiple ways. Detailed usage help for each command is available in [USAGE.md](USAGE.md).
+The tool has the flexibility to complete the verification process in multiple ways. The ZEN may also be sent from the stake address using a wallet or the zen-cli command line. Detailed usage help for each command is available in [USAGE.md](USAGE.md).
 
 The most straightforward process is to use the tool with the default options.
 
@@ -76,6 +76,20 @@ Once a stake address is verified it can be used to register a new Super Node or 
 
 #### Changing 'payto' Information of a Verified Address
 Rerun Steps 1-3 with the same stake address but provide different 'payto' addresses or percentages. After successful verification the new 'payto' addresses will be used starting from the next payment period. 
+
+### Additional Commands
+ Detailed usage help for each of these additional commands is available in [USAGE.md](USAGE.md).  
+
+#### List Existing Stakes - Retrieve the current list of stakes and their status from the tracking servers.  
+Command line: `./staketool liststakes --apikey=xn571c0cf42af2jcbb8dab2fafb973bfd14a2c0dbd`  
+
+#### Get Balance - Check the current balance of any zen address. 
+Command line: `./staketool getbalance --stake=ztpwi9FUYVjPRFEXsqTZ5zwvtUZCdaUNYy4`  
+
+#### Derive Addresses and Keys From Seed Phrase
+Command line: `./signtxtool keysfromseed --seed='my seed phrase'`    
+The signtx tool can list your addresses and private keys from your seed phrase. CAUTION: only perform this action on a secure system.  
+
 
 ### Development
 

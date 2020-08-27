@@ -171,14 +171,14 @@ exports.checkForTxidOrHex = (stakeObj, txSources, options) => {
   const { txid, signedtxhex } = txSources;
   const { verbose } = options;
 
-  if (!txid && !stakeObj.signedTx && !signedtxhex) {
+  if (!txid && !stakeObj.txid && !stakeObj.signedTx && !signedtxhex) {
     throw new Error('No txid, signetxhex, or signedTx found. Pass in a txid or signedtxhex or sign the raw trasaction with Step 2');
   }
 
   // check if already sent from tool
   if (stakeObj.txid) {
     let msg;
-    if (txid && stakeObj !== txid) {
+    if (txid && stakeObj.txid !== txid) {
       msg = 'txid found in process file and on command line and they do not match';
       return { issue: msg };
     }

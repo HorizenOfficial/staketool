@@ -7,7 +7,7 @@ const content = require('./signcontent');
 
 const getapp = () => {
   const n = process.argv[0].indexOf('node') !== -1;
-  const p = n ? path.resolve() : process.argv[0];
+  const p = n ? process.argv[1] : process.argv[0];
   const name = path.basename(p);
   if (n) return { usage: `node ${name}`, ver: `${name}` };
   const rel = process.argv[0].replace(process.cwd(), process.cwd() === '/' ? '/' : '.');

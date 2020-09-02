@@ -271,6 +271,7 @@ switch (command) {
       }
     }
     if (format && (format !== 'json' && format !== 'list')) valErrors += 'format must be json or list.';
+    if (stake && !isZenAddr(stake, { testnet, verbose })) valErrors += ' invalid stake address.';
 
     if (valErrors.length > 1) {
       console.log(`Errors found. Exiting. ${valErrors}`.red);

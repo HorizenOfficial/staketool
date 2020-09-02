@@ -255,3 +255,41 @@ exports.getBalance = async (stake, testnet) => {
       throw new Error(msg || error.message || error);
     });
 };
+
+/**
+ *
+ * @param {string} apikey  API subkey
+ * @param {string} stakeid  stake id to be cancelled
+ * @param {boolean} options  use testnet servers
+ *
+ * Only confirming and verified requests may be cancelled.
+ */
+exports.sendCancel = async (apikey, stakeid, options) => {
+  const { testnet, verbose } = options;
+  let url = testnet ? config.testnet.server : config.mainnet.server;
+  if (process.env.DEVSERVER) url = process.env.DEVSERVER;
+
+  try {
+    const head = await axios.head(url, { timeout: 8000, maxRedirects: 0 });
+    if (verbose) console.log(`Redirect check returned ${head.status}`);
+    url += '/api/stake/cancel';
+  } catch (error) {
+    if (error.response && (error.response.status === 301 || error.response.status === 302) && error.response.headers.location) {
+      const srv = error.response.headers.location;
+      if (verbose) console.log(`Redirecting to ${srv}`);
+      url = `${srv.endsWith('/') ? srv : `${srv}/`}api/stake/cancel`;
+    } else {
+      const servermsg = error.response && error.response.data ? error.response.data.message : error.message;
+      const msg = `sending cancel request. error:${servermsg || error}`;
+      return { issue: msg };
+    }
+  }
+
+  return axios.post(url, { apikey, stakeid }, { timeout: 8000 })
+    .then((response) => response.data)
+    .catch((err) => {
+      const servermsg = err.response && err.response.data ? err.response.data.message : err.message;
+      const msg = `sending cancel request. error:${servermsg || err}`;
+      return { issue: msg };
+    });
+};

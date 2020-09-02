@@ -9,6 +9,10 @@ module.exports.main = [
     desc: 'Broadcasts the verification transaction to the blockchain and the verification request to the tracking server',
   },
   {
+    command: 'cancelstakeverification'.yellow,
+    desc: 'Cancel a verification request that is confirming or verified',
+  },
+  {
     command: 'liststakes'.yellow,
     desc: 'List stakeaddresses and their verification status',
   },
@@ -35,7 +39,7 @@ module.exports.createstake = [
     desc: '(optional) [default: ./verificationfiles/<stakeFirst8Chars>_<satoshis>.json] override default filename or path/filename',
   },
   {
-    command: '-ez= | --extrazen=zen'.yellow,
+    command: '-ez=| --extrazen=zen'.yellow,
     desc: '(optional) an amount in zen to add to the verification transaction, see NOTES',
   },
   {
@@ -69,7 +73,8 @@ module.exports.createstakeNotes = [
   },
   {
     command: 'Method:',
-    desc: 'Option "tool" creates a raw transaction to be used by the tool (using zencashjs) and returns transaction and verification data.',
+    desc: 'Option "tool" creates a raw transaction to be used by the tool (using zencashjs) and returns transaction and verification data '
+    + 'to the tracking file. Signtxtool can be used to sign the transaction with the private key of the stake address.',
   },
   {
     command: '',
@@ -78,7 +83,7 @@ module.exports.createstakeNotes = [
   {
     command: '',
     desc: 'Option "instructions" displays links to documentation on how to create the transaction '
-    + 'using other methods like Sphere by Horizen or zen-cli z_sendmany.',
+      + 'using other methods like Sphere by Horizen or zen-cli z_sendmany.',
   },
   {
     command: '',
@@ -135,20 +140,23 @@ module.exports.sendtxNotes = [
       + 'the previous step and sent to the blockchain.',
   },
   { desc: '' },
-  { desc: 'If -txid is used, it is assumed that the transaction has already been broadcasted to the network.' },
+  { desc: 'If -txid is used, it is assumed that the transaction has already been broadcasted to the network by this tool or zen-cli or a wallet.' },
   { desc: '' },
+  { desc: 'When this step completes the transaction id (txid) is written back to the verification tracking file.' },
+  { desc: 'The tracking server replies with whether the stake verification request is created (status=confirming) or if there is an error.' },
+  { desc: '' },
+  { desc: 'If "sendtxandstakeverification" is run again and the txid is present, the tool will check the tracking server for status.' },
+  { desc: '' },
+  { desc: 'The tracking system waits for a number of block confirmations before changing the status to verified.' },
+  { desc: 'Once verified a request is set to active after the end of the current earning period. Any existing active is set to replaced.' },
   {
-    desc: 'When this step completes the transaction id (txid) is written back to the verification tracking file. '
-      + 'If "sendtxandstakeverification" is run again and the txid is present, the tool will check the tracking server for status.',
+    desc: 'The current status can also be found by using the liststakes command or by checking the My Stakes page on the tracking server '
+      + 'web site after setting up your API key.',
   },
   { desc: '' },
-  { desc: 'The tracking server replies with whether the stake verification request is verified, needs to be confirmed, rejected, or if there is an error.' },
-  { desc: 'The tracking system waits for a number of block conformations before changing the status to verified.' },
-  { desc: 'The current status can be found by using the liststakes command or by checking the tracking server web site after setting up your API key.' },
-  { desc: '' },
   {
-    desc: 'There is a time limit of 24 hours in which to complete a verification process. After 24 hours, '
-      + '"sendtxandstakeverification" will need to be repeated.',
+    desc: 'If the transaction is not found by the tracking server within 4 hours the request is set to failed and '
+      + 'the process will need to be repeated with a new transaction.',
   },
 ];
 
@@ -162,7 +170,7 @@ module.exports.liststakes = [
     desc: '(optional) filter by single stakeaddress',
   },
   {
-    command: '-st=| --status=confirming|verified|expired|replaced|failed|all'.yellow,
+    command: '-st=| --status=confirming|verified|cancelled|active|replaced|failed|all'.yellow,
     desc: '(optional) filter by status',
   },
   {
@@ -196,4 +204,28 @@ module.exports.getbalance = [
     command: '-v  | --verbose'.yellow,
     desc: '(optional) displays additional messages to help with troubleshooting',
   },
+];
+
+
+module.exports.cancelstake = [
+  {
+    command: '-a= | --apikey=apisubkey'.yellow,
+    desc: '(required) a Super Node API sub key. Environment variable APIKEY can be used instead.',
+  },
+  {
+    command: '-id=| --idstake=stakeid'.yellow,
+    desc: '(required) stake id to cancel',
+  },
+  {
+    command: '-t  | --testnet'.yellow,
+    desc: '(optional) use for interacting with testnet tracking system',
+  },
+  {
+    command: '-v  | --verbose'.yellow,
+    desc: '(optional) displays additional messages to help with troubleshooting',
+  },
+];
+
+module.exports.cancelstakeNotes = [
+  { desc: 'Only status \'confirming\' and \'verified\' requests can be cancelled. Use \'liststakes\' command to get the stake id.' },
 ];

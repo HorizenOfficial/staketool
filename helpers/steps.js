@@ -101,7 +101,7 @@ exports.buildTx = async (stakeverification, method, options) => {
   if (verbose) console.log('OUTS ', outs);
   if (outs.issue) {
     const msg = `${outs.issue} Amount=${data.amount} balance=${outs.bal} diff=${outs.need}. `
-      + `Please send ${outs.need} + ${fee} (${outs.need + fee}) ZEN to ${data.stake}`;
+      + `Please send ${outs.need} + ${fee} (${(outs.need + fee).toFixed(8)}) ZEN to ${data.stake}`;
     throw new Error(msg);
   }
   const feeSats = fee * 100000000;

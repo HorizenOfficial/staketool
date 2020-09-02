@@ -59,7 +59,7 @@ const sendtxhelp = () => {
   console.log(`  ${app.usage} sendtxandstakeverification [OPTIONS]`.yellow);
   console.log('');
   console.log('DESCRIPTION'.cyan);
-  console.log('  Broadcasts the verification transaction to the blockchain and the verification request to the tracking server ');
+  console.log('  Broadcasts the verification transaction (if present) to the blockchain and the verification request to the tracking server ');
   console.log('');
   console.log('OPTIONS'.cyan);
   console.log((new Table(content.sendtx, format)).toString());
@@ -96,6 +96,21 @@ const getbalancehelp = () => {
   console.log('');
 };
 
+const cancelstakehelp = () => {
+  desc();
+  console.log('USAGE'.cyan);
+  console.log(`  ${app.usage} cancelstakeverification [OPTIONS]`.yellow);
+  console.log('');
+  console.log('DESCRIPTION'.cyan);
+  console.log('  Cancel a confirming or verified request ');
+  console.log('');
+  console.log('OPTIONS'.cyan);
+  console.log((new Table(content.cancelstake, format)).toString());
+  console.log('');
+  console.log('NOTES'.cyan);
+  console.log((new Table(content.cancelstakeNotes, format)).toString());
+};
+
 /**
  *
  * @param {string} command  command from cli
@@ -110,6 +125,9 @@ exports.main = (command, arg3, options) => {
 
   if ((arg3 === 'help' && command === 'sendtxandstakeverification')
     || (arg3 === 'sendtxandstakeverification' && command === 'help')) return sendtxhelp();
+
+  if ((arg3 === 'help' && command === 'cancelstakeverification')
+    || (arg3 === 'cancelstakeverification' && command === 'help')) return cancelstakehelp();
 
   if ((arg3 === 'help' && command === 'liststakes')
     || (arg3 === 'liststakes' && command === 'help')) return liststakeshelp();

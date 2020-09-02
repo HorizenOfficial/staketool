@@ -1,9 +1,10 @@
 /* eslint-disable prefer-destructuring */
 require('colors');
 const steps = require('./helpers/steps');
-const { getBalance, listStakes, sendSignedTx } = require('./helpers/utils');
+const { getBalance, listStakes, sendSignedTx, sendCancel } = require('./helpers/utils');
 const { getFile } = require('./helpers/fileutils');
 const help = require('./help/help');
+const { isZenAddr } = require('./helpers/validate');
 
 
 
@@ -21,7 +22,14 @@ const verbose = process.argv.includes('--verbose', 2) || process.argv.includes('
 const ERROR_DETAILS = process.env.ERROR_DETAILS || false;
 if (verbose) console.log('ENV: ERROR_DETAILS', ERROR_DETAILS);
 
-const commands = ['createstakeverification', 'signverificationtransaction', 'sendtxandstakeverification', 'liststakes', 'getbalance'];
+const commands = [
+  'createstakeverification',
+  'signverificationtransaction',
+  'sendtxandstakeverification',
+  'cancelstakeverification',
+  'liststakes',
+  'getbalance',
+];
 const command = process.argv[2];
 const arg3 = process.argv[3] || null;
 if (commands.indexOf(command) === -1 || command === 'help' || command === '--help' || command === '-h' || arg3 === 'help') {
@@ -178,6 +186,53 @@ switch (command) {
         const resultSendVer = await steps.sendVerification(apikey, stakeObj, inputfile, { outputfile, testnet, verbose });
         if (resultSendVer.issue) throw new Error(`ISSUE ${resultSendVer.issue}`);
         console.log(`${resultSendVer.msg} ${resultSendVer.status ? `Status: ${resultSendVer.status}` : ''}`);
+      } catch (error) {
+        console.log(ERROR_DETAILS ? error : error.message.red);
+      }
+    })();
+    break;
+  }
+  case 'cancelstakeverification': { // cancel confirming or verified
+    let apikey;
+    let stakeid;
+    let issue;
+    const allowed = ['-a', '-id', '-t', '-v', '--apikey', '--idstake', '--testnet', '--verbose'];
+    if (verbose) console.log('ARGUMENT COUNT=', process.argv.length);
+    for (let i = 0; i < process.argv.length; i++) {
+      const val = process.argv[i].split('=');
+      if (i > 2 && verbose) displayArg(val);
+      if (i > 2 && allowed.indexOf(val[0]) === -1) {
+        console.log(`${val[0]} is not valid for this command. Ensure file names have quotes. For command help: staketool sendtxandstakeverification help`.red);
+        issue = true;
+        break;
+      }
+      if (val[0] === '-a' || val[0] === '--apikey') apikey = val[1];
+      if (val[0] === '-id' || val[0] === '--idstake') stakeid = val[1];
+      if (val[0] === '-t' || val[0] === '--testnet') testnet = true;
+    }
+    if (issue) break;
+    valErrors = '';
+    if (!apikey) {
+      if (process.env.APIKEY) {
+        apikey = process.env.APIKEY;
+      } else {
+        valErrors += 'Missing apikey. ';
+      }
+    }
+    if (!stakeid) valErrors += "Missing stake id. Use 'liststakes' to retrieve a list of stakes.";
+
+    if (valErrors.length > 1) {
+      console.log(`Errors found. Exiting. ${valErrors}`.red);
+      break;
+    } else {
+      valErrors = '';
+    }
+
+    (async () => {
+      try {
+        const result = await sendCancel(apikey, stakeid, { testnet, verbose });
+        if (result.issue) throw new Error(`ISSUE ${result.issue}`);
+        console.log(result.msg);
       } catch (error) {
         console.log(ERROR_DETAILS ? error : error.message.red);
       }

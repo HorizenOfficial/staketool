@@ -28,7 +28,7 @@ exports.saveFile = (data, path) => {
   const filepath = checkPath(path);
   let filehandle;
   try {
-    filehandle = fs.writeFileSync(filepath, JSON.stringify(data));
+    filehandle = fs.writeFileSync(filepath, JSON.stringify(data, undefined, 2));
   } catch (err) {
     console.error(err.message);
   }

@@ -96,15 +96,16 @@ exports.buildTx = async (stakeverification, method, options) => {
     return { issue: `No unspent found. ${sendfunds} ` };
   }
 
+  const feeSats = fee * 100000000;
+  const amtSats = data.satoshis + feeSats;
   // returns an object with unspent or error
-  const outs = utils.findVOUTS(utxos, data.satoshis, options);
+  const outs = utils.findVOUTS(utxos, amtSats, options);
   if (verbose) console.log('OUTS ', outs);
   if (outs.issue) {
     const msg = `${outs.issue} Amount=${data.amount} balance=${outs.bal} diff=${outs.need}. `
-      + `Please send ${outs.need} + ${fee} (${outs.need + fee}) ZEN to ${data.stake}`;
+     + `Please send at least ${outs.need} ZEN to ${data.stake}`;
     throw new Error(msg);
   }
-  const feeSats = fee * 100000000;
   // create a tx object to sign
   const change = outs.sumSatoshis - data.satoshis - feeSats;
   const inputs = outs.unspent;

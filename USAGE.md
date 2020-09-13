@@ -7,7 +7,7 @@ $ ./staketool help
 Horizen supernode stake ownerhsip verification tool
 
 VERSION
-  staketool v1.2.0   linux-x64   node v12.18.1
+  staketool v1.2.1   linux-x64   node v12.18.1
 
 USAGE
   ./staketool [COMMAND]
@@ -151,7 +151,7 @@ $ ./signtxtool help
 Horizen supernode stake ownerhsip verification tool
 
 VERSION
-  signtxtool v1.2.0   linux-x64   node v12.18.1
+  signtxtool v1.2.1   linux-x64   node v12.18.1
 
 USAGE
   ./signtxtool [COMMAND]
@@ -209,6 +209,7 @@ DESCRIPTION
 OPTIONS
   -s= | --seed="BIP39 seed phrase words"   (required) the BIP39 seed phrase                                                                                                     
   -a= | --account=integer                  (optional) [default: 0] the account to use for the derivation path                                                                   
+  -n= | --number=integer                   (optional) [default: 10] the quantity of addresses to return                                                                         
   -p= | --password="BIP39 Passphrase"      (optional) the BIP39 Passphrase                                                                                                      
   -f= | --format=json|list                 (optional) [default: json] format the output, displays either JSON or a list of one zen address and WIF private key per console line 
   -t  | --testnet                          (optional) use for interacting with testnet network                                                                                  

@@ -86,6 +86,10 @@ Command line: `./staketool liststakes --apikey=xn571c0cf42af2jcbb8dab2fafb973bfd
 #### Get Balance - Check the current balance of any zen address. 
 Command line: `./staketool getbalance --stake=ztpwi9FUYVjPRFEXsqTZ5zwvtUZCdaUNYy4`  
 
+#### Cancel Request - Cancel a confirming or verified request. 
+Command line: `./staketool cancelstakeverification --idstake=201 --apikey=xn571c0cf42af2jcbb8dab2fafb973bfd14a2c0dbd`  
+The stake id for --idstake can be found using the 'liststakes' command
+
 #### Derive Addresses and Keys From Seed Phrase
 Command line: `./signtxtool keysfromseed --seed='my seed phrase'`    
 The signtx tool can list your addresses and private keys from your seed phrase. CAUTION: only perform this action on a secure system.  

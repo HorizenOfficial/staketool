@@ -58,6 +58,10 @@ module.exports.keysfromseed = [
     desc: '(optional) [default: 0] the account to use for the derivation path',
   },
   {
+    command: '-n= | --number=integer'.yellow,
+    desc: '(optional) [default: 10] the quantity of addresses to return',
+  },
+  {
     command: '-p= | --password="BIP39 Passphrase"'.yellow,
     desc: '(optional) the BIP39 Passphrase',
   },

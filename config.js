@@ -14,5 +14,5 @@ exports.config = {
     defaultFee: 0.0001,
   },
   savePath: './verificationfiles',
-  instructionslink: 'https://horizenofficial.atlassian.net/wiki/spaces/ZEN/pages/136872141/Secure+and+Super+Nodes',
+  instructionslink: 'https://horizenofficial.atlassian.net/wiki/spaces/ZEN/pages/1458667521/Staketool+-+Intro+Setup',
 };

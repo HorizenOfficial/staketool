@@ -40,7 +40,7 @@
     "signtxtool": "signtxtool.js"
   },
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "bip32": "^2.0.5",
     "bip39": "^3.0.2",
     "bs58check": "^2.1.2",

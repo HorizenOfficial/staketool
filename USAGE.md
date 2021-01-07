@@ -7,7 +7,7 @@ $ ./staketool help
 Horizen supernode stake ownerhsip verification tool
 
 VERSION
-  staketool v1.2.1   linux-x64   node v12.18.1
+  staketool v1.2.2   linux-x64   node v12.18.1
 
 USAGE
   ./staketool [COMMAND]
@@ -151,7 +151,7 @@ $ ./signtxtool help
 Horizen supernode stake ownerhsip verification tool
 
 VERSION
-  signtxtool v1.2.1   linux-x64   node v12.18.1
+  signtxtool v1.2.2   linux-x64   node v12.18.1
 
 USAGE
   ./signtxtool [COMMAND]

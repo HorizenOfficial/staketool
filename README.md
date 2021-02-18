@@ -27,7 +27,7 @@ Stand alone binaries for multiple platforms can be downloaded under [releases](h
 If you prefer to run the CLI apps under nodejs you can do so by cloning the repository and running `npm ci`. After that you can run the tools by using `node staketool.js` and `node signtxtool.js`.
 
 ### What You Will Need
-* The ZEN address where the stake amount will reside, a small amount to create the verification transaction is needed in this address (<0.1 ZEN). No Super or Secure Nodes are allowed to be registered with this address prior to verification, it has to be a new stake address. A stake address cannot be used on both tracking systems.
+* The ZEN address where the stake amount will reside, a small amount to create the verification transaction is needed in this address (<0.1 ZEN). No Super or Secure Nodes are allowed to be registered with this address prior to verification, it has to be a new stake address. The same stake address cannot be verified on both tracking systems.
 * One to five 'payto' addresses. A percentage of the node earnings may be split between addresses.
 * The private key of the stake address, unless you prefer to send the verification transaction from a wallet like [Sphere by Horizen](https://github.com/HorizenOfficial/Sphere_by_Horizen) or use the zen-cli command line.
 * A Horizen Super or Secure Node API sub key.  This sub key is provided by your Node hosting provider or, if you host your own nodes, you can create it on the [Secure Node API Settings](https://securenodes.zensystem.io/settings/) or [Super Node API Settings](https://supernodes.zensystem.io/settings/) page.
@@ -116,11 +116,11 @@ Testnet ZEN can be requested at https://testnet.getzen.cash, testnet addresses a
 
 The tool deterministically derives the amount in satoshis to send in the verification transaction by taking part of a sha256 hash of a JSON object comprising the stake and 'payto' addresses.
 
-The reference implementation of creating the `hashobj` can be found in [helpers/steps.js#L29-L71](https://github.com/HorizenOfficial/staketool/blob/master/helpers/steps.js#L29-L71)
+The reference implementation of creating the `hashobj` can be found in [helpers/steps.js#L29-L72](https://github.com/HorizenOfficial/staketool/blob/master/helpers/steps.js#L29-L72)
 
 The reference implementation of the algorithm deriving the amount in satoshis from the `hashobj` can be found in [helpers/utils.js#L17-L30](https://github.com/HorizenOfficial/staketool/blob/master/helpers/utils.js#L17-L30)
 
-The `hashobj` is submitted to the tracking servers, the amount in satoshis is calculated again and compared to the on-chain verification transaction. Only the last 8 digits of the satoshi value are compared. To make preserving of JSON element order easier `hashobj` is base64 encoded, the reference implementation sending a verification POST request to the tracking server API at https://supernodes1.eu.zensystem.io/api/stake/verify or https://securenodes1.eu.zensystem.io/api/stake/verify can be found in [helpers/steps.js#L219-L238](https://github.com/HorizenOfficial/staketool/blob/master/helpers/steps.js#L219-L238) and [helpers/utils.js#L182-L214](https://github.com/HorizenOfficial/staketool/blob/master/helpers/utils.js#L182-L214).
+The `hashobj` is submitted to the tracking servers, the amount in satoshis is calculated again and compared to the on-chain verification transaction. Only the last 8 digits of the satoshi value are compared. To make preserving of JSON element order easier `hashobj` is base64 encoded, the reference implementation sending a verification POST request to the tracking server API at https://supernodes1.eu.zensystem.io/api/stake/verify or https://securenodes1.eu.zensystem.io/api/stake/verify can be found in [helpers/steps.js#L221-L241](https://github.com/HorizenOfficial/staketool/blob/master/helpers/steps.js#L221-L241) and [helpers/utils.js#L182-L215](https://github.com/HorizenOfficial/staketool/blob/master/helpers/utils.js#L182-L215).
 
 [david-img]: https://david-dm.org/HorizenOfficial/staketool.svg?style=flat-square
 [david-url]: https://david-dm.org/HorizenOfficial/staketool

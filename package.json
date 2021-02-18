@@ -1,7 +1,7 @@
 {
   "name": "staketool",
   "version": "1.2.2",
-  "description": "Horizen supernode stake ownerhsip verification tool",
+  "description": "Horizen node stake ownerhsip verification tool",
   "repository": "https://github.com/HorizenOfficial/staketool",
   "homepage": "https://github.com/HorizenOfficial/staketool",
   "bugs": {

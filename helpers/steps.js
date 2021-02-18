@@ -27,7 +27,7 @@ const { config } = require('../config.js');
  * @param {object} options  individual key:values
  */
 exports.stakeVerification = async (stake, payaddress, options) => {
-  const { testnet, verbose, outputfile, method, extrazen } = options;
+  const { testnet, verbose, outputfile, method, extrazen, system } = options;
   const isZenStake = validate.isZenAddr(stake, options);
   if (!isZenStake) return null;
   if (verbose) console.log(`VALID STAKE= ${isZenStake}`);
@@ -60,9 +60,10 @@ exports.stakeVerification = async (stake, payaddress, options) => {
     filename = `${stake.substring(0, 8)}_${satoshis}.json`;
   }
   stakeverifyObj.filename = filename;
-  fileutils.saveFile(stakeverifyObj, filename);
+  stakeverifyObj.system = system;
+  fileutils.saveFile(stakeverifyObj, filename, system);
   // save name of file currently being processes for next steps.
-  fileutils.saveFile({ filename }, 'inprocess.json');
+  fileutils.saveFile({ filename }, 'inprocess.json', system);
 
   if (verbose) console.log('FILE SAVED:', filename);
   if (method === 'instructions') instructions.listSendTxInstructions(stakeverifyObj, fee, config.instructionslink);
@@ -225,15 +226,16 @@ exports.sendTx = async (stakeObj, testnet) => {
  * @param {object} options  optional key:value items
  */
 exports.sendVerification = async (apikey, stakeObj, inputFile, options) => {
-  const { outputfile, testnet, verbose } = options;
+  const { outputfile, verbose, system } = options;
   const verification = { stake: stakeObj.stake, amount: stakeObj.amount, request: stakeObj.request, txid: stakeObj.txid };
-  const response = await utils.sendVerification(apikey, verification, testnet);
+  const response = await utils.sendVerification(apikey, verification, system);
   if (verbose) console.log('TRACKING SERVER RESPONSE:', response);
   const data = { ...stakeObj };
+  response.time = (new Date()).toUTCString();
   data.confirmationStatus = response;
   // output to file
   const filename = outputfile || inputFile;
-  fileutils.saveFile(data, filename);
+  fileutils.saveFile(data, filename, system);
 
   return response;
 };

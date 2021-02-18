@@ -183,10 +183,11 @@ exports.sendSignedTx = async (signedTx, testnet) => {
  *
  * @param {string} apikey  user's apikey either main or sub key
  * @param {object} verification stake verification from step 1
- * @param {boolean} testnet
+ * @param {string} system  tracking system : testnet, super, or secure
+ *
  */
-exports.sendVerification = async (apikey, verification, testnet) => {
-  let url = testnet ? config.testnet.server : config.mainnet.server;
+exports.sendVerification = async (apikey, verification, system) => {
+  let url = system === 'testnet' ? config.testnet.server : config.mainnet[system];
   if (process.env.DEVSERVER) url = process.env.DEVSERVER;
 
   return axios.head(url, { timeout: 8000, maxRedirects: 0 })
@@ -220,11 +221,11 @@ exports.sendVerification = async (apikey, verification, testnet) => {
 /**
  *
  * @param {string} apikey  users apikey either main or sub key
- * @param {object} options  stake, status and testnet
+ * @param {object} options  stake, status, system and testnet
  *
  */
 exports.listStakes = async (apikey, options) => {
-  let url = options.testnet ? config.testnet.server : config.mainnet.server;
+  let url = options.testnet ? config.testnet.server : config.mainnet[options.system];
   let filters = options.stake ? `&stake=${options.stake}` : '';
   filters += options.status ? `&status=${options.status}` : '';
   if (process.env.DEVSERVER) url = process.env.DEVSERVER;
@@ -260,13 +261,13 @@ exports.getBalance = async (stake, testnet) => {
  *
  * @param {string} apikey  API subkey
  * @param {string} stakeid  stake id to be cancelled
- * @param {boolean} options  use testnet servers
+ * @param {object} options  testnet, verbose and system
  *
  * Only confirming and verified requests may be cancelled.
  */
 exports.sendCancel = async (apikey, stakeid, options) => {
-  const { testnet, verbose } = options;
-  let url = testnet ? config.testnet.server : config.mainnet.server;
+  const { testnet, verbose, system } = options;
+  let url = testnet ? config.testnet.server : config.mainnet[system];
   if (process.env.DEVSERVER) url = process.env.DEVSERVER;
 
   try {

@@ -108,7 +108,7 @@ switch (command) {
         if (result.issue) throw new Error(`ISSUE ${result.issue}`);
         if (verbose) console.log('stakeverification= ', result);
         if (method === 'zen-cli' || method === 'tool') {
-          txresult = await steps.buildTx(result, method, { testnet, outputfile, verbose });
+          txresult = await steps.buildTx(result, method, { testnet, outputfile, verbose, system });
           if (verbose) console.log('verificationtransaction= ', txresult);
           if (txresult.issue) throw new Error(`ISSUE ${txresult.issue}`);
         }

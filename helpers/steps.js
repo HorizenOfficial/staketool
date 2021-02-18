@@ -85,7 +85,7 @@ exports.stakeVerification = async (stake, payaddress, options) => {
  * @param {object} options  optional key:value items
  */
 exports.buildTx = async (stakeverification, method, options) => {
-  const { testnet, outputfile, verbose } = options;
+  const { testnet, outputfile, verbose, system } = options;
   const data = { ...stakeverification };
 
   const utxos = await utils.getUTXOs(data.stake, testnet);
@@ -124,7 +124,7 @@ exports.buildTx = async (stakeverification, method, options) => {
 
   // output to file
   const filename = outputfile || data.filename;
-  fileutils.saveFile(data, filename);
+  fileutils.saveFile(data, filename, system);
   if (verbose) console.log('FILE SAVED: ', filename);
 
   const result = {

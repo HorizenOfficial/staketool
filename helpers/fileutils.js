@@ -12,7 +12,7 @@ const checkPath = (path, system) => {
   if (path.indexOf('/') > 0 || path.indexOf('\\') > 0) {
     return path;
   }
-  const dir = `${config.savePath || './verificationfiles2'}/${system}/`;
+  const dir = `${config.savePath || './verificationfiles'}/${system}/`;
   fs.ensureDirSync(dir);
   return `${dir}/${path}`;
 };

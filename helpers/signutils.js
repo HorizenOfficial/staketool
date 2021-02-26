@@ -35,7 +35,7 @@ exports.signTransaction = async (input, privkey, options) => {
   const { outputfile, verbose, system } = options;
 
   // get the file and the raw tx
-  const contents = await getFile(input);
+  const contents = await getFile(input, system);
   if (!contents) return { issue: 'File not found' };
 
   const data = JSON.parse(contents);

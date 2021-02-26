@@ -12,10 +12,8 @@ const checkPath = (path, system) => {
   if (path.indexOf('/') > 0 || path.indexOf('\\') > 0) {
     return path;
   }
-  const dir = `${config.savePath || './verificationfiles'}/${system}/`;
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
+  const dir = `${config.savePath || './verificationfiles2'}/${system}/`;
+  fs.ensureDirSync(dir);
   return `${dir}/${path}`;
 };
 

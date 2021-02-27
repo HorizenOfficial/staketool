@@ -183,33 +183,37 @@ exports.sendSignedTx = async (signedTx, testnet) => {
  *
  * @param {string} apikey  user's apikey either main or sub key
  * @param {object} verification stake verification from step 1
- * @param {string} system  tracking system : testnet, super, or secure
+ * @param {object} options  tracking system : testnet, super, or secure. verbose
  *
  */
-exports.sendVerification = async (apikey, verification, system) => {
+exports.sendVerification = async (apikey, verification, options) => {
+  const { verbose, system } = options;
   let url = system === 'testnet' ? config.testnet.server : config.mainnet[system];
   if (process.env.DEVSERVER) url = process.env.DEVSERVER;
 
-  return axios.head(url, { timeout: 8000, maxRedirects: 0 })
-    .then((response) => response.data)
-    .catch((error) => {
-      // axios turns a redirect POST into GET. Resubmit.
-      // head request will error with 302. Use server returned.
-      if ((error.response.status === 301 || error.response.status === 302) && error.response.headers.location) {
-        const srv = error.response.headers.location;
-        const resUrl = `${srv.endsWith('/') ? srv : `${srv}/`}api/stake/verify`;
-        const data = { ...verification };
-        data.key = apikey;
-        return axios.post(resUrl, data, { timeout: 8000 })
-          .then((response) => response.data)
-          .catch((err) => {
-            const servermsg = err.response && err.response.data ? err.response.data.message : err.message;
-            const msg = `sending verification request. error:${servermsg || err}`;
-            return { issue: msg };
-          });
-      }
+  try {
+    const head = await axios.head(url, { timeout: 8000, maxRedirects: 0 });
+    if (verbose) console.log(`Redirect check returned ${head.status}`);
+    url += '/api/stake/verify';
+  } catch (error) {
+    if (error.response && (error.response.status === 301 || error.response.status === 302) && error.response.headers.location) {
+      const srv = error.response.headers.location;
+      if (verbose) console.log(`Redirecting to ${srv}`);
+      url = `${srv.endsWith('/') ? srv : `${srv}/`}api/stake/verify`;
+    } else {
       const servermsg = error.response && error.response.data ? error.response.data.message : error.message;
       const msg = `sending verification request. error:${servermsg || error}`;
+      return { issue: msg };
+    }
+  }
+
+  const data = { ...verification };
+  data.key = apikey;
+  return axios.post(url, data, { timeout: 8000 })
+    .then((response) => response.data)
+    .catch((err) => {
+      const servermsg = err.response && err.response.data ? err.response.data.message : err.message;
+      const msg = `sending verification request. error:${servermsg || err}`;
       return { issue: msg };
     });
 };

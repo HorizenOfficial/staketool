@@ -228,7 +228,7 @@ exports.sendTx = async (stakeObj, testnet) => {
 exports.sendVerification = async (apikey, stakeObj, inputFile, options) => {
   const { outputfile, verbose, system } = options;
   const verification = { stake: stakeObj.stake, amount: stakeObj.amount, request: stakeObj.request, txid: stakeObj.txid };
-  const response = await utils.sendVerification(apikey, verification, system);
+  const response = await utils.sendVerification(apikey, verification, options);
   if (verbose) console.log('TRACKING SERVER RESPONSE:', response);
   const data = { ...stakeObj };
   response.time = (new Date()).toUTCString();

@@ -115,7 +115,8 @@ switch (command) {
     let password;
     let format;
     let issue;
-    const allowed = ['-s', '-a', '-n', '-p', '-f', '-sys', '-v', '--seed', '--account', '--number', '--password', '--format', '--system', '--verbose'];
+    let network;
+    const allowed = ['-s', '-a', '-n', '-p', '-f', '-net', '-v', '--seed', '--account', '--number', '--password', '--format', '--network', '--verbose'];
     if (verbose) console.log('ARGUMENT COUNT=', process.argv.length);
     for (let i = 0; i < process.argv.length; i++) {
       const val = process.argv[i].split('=');
@@ -130,13 +131,16 @@ switch (command) {
       if (val[0] === '-n' || val[0] === '--number') number = val[1];
       if (val[0] === '-p' || val[0] === '--password') password = val[1];
       if (val[0] === '-f' || val[0] === '--format') format = val[1];
-      if (val[0] === '-sys' || val[0] === '--system') system = val[1];
+      if (val[0] === '-net' || val[0] === '--network') network = val[1] || 'missing value';
     }
     if (issue) break;
-    testnet = system === 'testnet';
+    testnet = network === 'testnet';
     valErrors = '';
 
-    if (!system || !sys.includes(system)) valErrors += ` --system is required and must be one of: ${sys.join(', ')}.`;
+    if (network && network !== 'mainnet' && network !== 'testnet') {
+      console.log('Errors found. Exiting. --network must be either mainnet or testnet. If not present default is mainnet.');
+      process.exit();
+    }
     if (!seed) {
       seed = prompt('Enter the BIP39 seed phrase: ');
     }
@@ -150,7 +154,6 @@ switch (command) {
     } else {
       valErrors = '';
     }
-    if (!testnet) testnet = 0;
 
     (async () => {
       try {

@@ -51,12 +51,12 @@ module.exports.signtxNotes = [
 
 module.exports.keysfromseed = [
   {
-    command: '-sys=| --system=super|secure|testnet'.yellow,
-    desc: '(required) tracking system where stake is used',
-  },
-  {
     command: '-s=  | --seed="BIP39 seed phrase words"'.yellow,
     desc: '(required) the BIP39 seed phrase',
+  },
+  {
+    command: '-net=| --network=mainnet|testnet'.yellow,
+    desc: '(optional) The ZEN network to use (default: mainnet)',
   },
   {
     command: '-a=  | --account=integer'.yellow,

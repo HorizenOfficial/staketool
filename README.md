@@ -24,7 +24,7 @@ The tool consists of two command line applications:
 
 Stand alone binaries for multiple platforms can be downloaded under [releases](https://github.com/HorizenOfficial/staketool/releases/).
 
-If you prefer to run the CLI apps under nodejs you can do so by cloning the repository and running `npm ci`. After that you can run the tools by using `node staketool.js` and `node signtxtool.js`.
+If you prefer to run the CLI apps under nodejs (>=14) you can do so by cloning the repository and running `npm ci`. After that you can run the tools by using `node staketool.js` and `node signtxtool.js`.
 
 ### What You Will Need
 * The ZEN address where the stake amount will reside, a small amount to create the verification transaction is needed in this address (<0.1 ZEN). No Super or Secure Nodes are allowed to be registered with this address prior to verification, it has to be a new stake address. The same stake address cannot be verified on both tracking systems.

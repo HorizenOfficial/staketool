@@ -32,9 +32,9 @@ else
   cd ./bin/"${TRAVIS_OS_NAME}"
   shasum -a256 * > checksums.sha256
   tar -czf "../staketool-${TRAVIS_OS_NAME}-${TRAVIS_TAG}.tar.gz" *
-  cd ../alpine
-  shasum -a256 * > checksums.sha256
-  tar -czf "../staketool-alpine-${TRAVIS_TAG}.tar.gz" *
+#  cd ../alpine
+#  shasum -a256 * > checksums.sha256
+#  tar -czf "../staketool-alpine-${TRAVIS_TAG}.tar.gz" *
   cd ..
   for file in *.tar.gz; do
     shasum -a256 "${file}" > "${file}.sha256"

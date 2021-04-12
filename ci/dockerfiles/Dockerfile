@@ -4,7 +4,7 @@ FROM node:$FLAVOR
 
 MAINTAINER cronic@zensystem.io
 
-RUN apk --no-cache add bash build-base python3
+RUN apk --no-cache add bash build-base python3 git
 
 USER node
 

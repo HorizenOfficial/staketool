@@ -101,7 +101,6 @@ The signtx tool can list your addresses and private keys from your seed phrase. 
 ```
 git clone https://github.com/HorizenOfficial/staketool.git
 cd staketool
-npm config set script-shell "$(which bash)"
 npm ci
 npm run test # basic linting and audit checks
 npm run makebins # package stand alone binaries for all platforms, output in ./bin

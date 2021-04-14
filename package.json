@@ -52,6 +52,7 @@
     "zencashjs": "^1.2.6"
   },
   "devDependencies": {
+    "concurrently": "^6.0.2",
     "eslint": "^7.20.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
@@ -71,11 +72,11 @@
     "makesigntxtool-alpine": "pkg ./signtxtool.js --targets node14-alpine-x64 --public --no-bytecode --out-path ./bin/alpine",
     "makesigntxtool-osx": "pkg ./signtxtool.js --targets node14-macos-x64 --public --no-bytecode --out-path ./bin/osx",
     "makesigntxtool-windows": "pkg ./signtxtool.js --targets node14-win-x64 --public --no-bytecode --out-path ./bin/windows",
-    "makebins-linux": "for tool in {makestaketool,makesigntxtool}-linux; do npm run $tool || exit 1; done",
-    "makebins-alpine": "for tool in {makestaketool,makesigntxtool}-alpine; do npm run $tool || exit 1; done",
-    "makebins-osx": "for tool in {makestaketool,makesigntxtool}-osx; do npm run $tool || exit 1; done",
-    "makebins-windows": "for tool in {makestaketool,makesigntxtool}-windows; do npm run $tool || exit 1; done",
-    "makebins": "for tool in {makestaketool,makesigntxtool}-{linux,alpine,osx,windows}; do npm run $tool || exit 1; done",
+    "makebins-linux": "npx concurrently -m1 npm:makestaketool-linux npm:makesigntxtool-linux",
+    "_makebins-alpine": "npx concurrently -m1 npm:makestaketool-alpine npm:makesigntxtool-alpine",
+    "makebins-osx": "npx concurrently -m1 npm:makestaketool-osx npm:makesigntxtool-osx",
+    "makebins-windows": "npx concurrently -m1 npm:makestaketool-windows npm:makesigntxtool-windows",
+    "makebins": "npx concurrently npm:makebins-*",
     "lint": "eslint --ext .js . --quiet",
     "lint:package": "npmPkgJsonLint .",
     "audit:process": "./ci/scripts/audit.sh"

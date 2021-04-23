@@ -1,10 +1,10 @@
-ARG FLAVOR=12-alpine
+ARG FLAVOR=14-alpine
 
 FROM node:$FLAVOR
 
 MAINTAINER cronic@zensystem.io
 
-RUN apk --no-cache add bash build-base python3 git linux-headers
+RUN apk --no-cache add bash build-base python3
 
 USER node
 

@@ -2,6 +2,11 @@
 
 set -eo pipefail
 
+# for best formatting on github set the console width to 133
+gh_cols="133"
+orig_cols="$(stty size | cut -d ' ' -f 2)"
+stty cols $gh_cols
+
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 ROOTFOLDER="$(readlink -f "${SCRIPTPATH}/../../")"
 USAGEFILE="${ROOTFOLDER}/USAGE.md"
@@ -28,7 +33,11 @@ generate_usage () {
 }
 
 echo "# USAGE" > "${USAGEFILE}"
-generate_usage staketool "help,help createstakeverification,help sendtxandstakeverification,help liststakes,help getbalance,help help" |
+generate_usage staketool "help,help createstakeverification,help sendtxandstakeverification,help cancelstakeverification,help liststakes,help getbalance,help help" |
   sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g" >> "${USAGEFILE}"
 generate_usage signtxtool "help,help signverificationtransaction,help keysfromseed,help help" |
   sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g" >> "${USAGEFILE}"
+
+# restore original tty size
+stty cols $orig_cols
+reset -w

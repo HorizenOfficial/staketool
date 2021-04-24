@@ -8,11 +8,12 @@ exports.config = {
   },
   mainnet: {
     explorerURL: 'https://explorer.horizen.io/api',
-    server: 'https://supernodes.zensystem.io',
+    super: 'https://supernodes.zensystem.io',
+    secure: 'https://securenodes.zensystem.io',
     anchorBlock: 760000,
     anchorHash: '0000000004ae3b44b9643ef95b09f980cf11f149b902217ccbcdcf72984a2990',
     defaultFee: 0.0001,
   },
   savePath: './verificationfiles',
-  instructionslink: 'https://horizenofficial.atlassian.net/wiki/spaces/ZEN/pages/1458667521/Staketool+-+Intro+Setup',
+  instructionslink: 'https://horizenofficial.atlassian.net/wiki/spaces/ZEN/pages/2127101965',
 };

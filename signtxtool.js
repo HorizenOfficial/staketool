@@ -37,20 +37,22 @@ if (commands.indexOf(command) === -1 || command === 'help' || command === '--hel
 if (verbose) console.log(`COMMAND ${command}`);
 
 const displayArg = (val) => {
-  const status = val[1] || (val[0] === '--testnet' || val[0] === '--verbose' || val[0] === '-t' || val[0] === '-v' ? 'true' : 'missing');
+  const status = val[1] || (val[0] === '--verbose' || val[0] === '-v' ? 'true' : 'missing or incorrect');
   console.log(`ARG ${val[0]} = ${status}`);
 };
 
+const sys = ['super', 'secure', 'testnet'];
 let outputfile;
 let testnet;
 let inputfile;
 let valErrors = '';
+let system;
 
 switch (command) {
   case 'signverificationtransaction': {
     let privkey;
     let issue;
-    const allowed = ['-i', '-o', '-p', '-t', '-v', '--inputfile', '--outputfile', '--privkey', '--testnet', '--verbose'];
+    const allowed = ['-i', '-o', '-p', '-sys', '-v', '--inputfile', '--outputfile', '--privkey', '--system', '--verbose'];
     if (verbose) console.log('ARGUMENT COUNT=', process.argv.length);
     // process.argv.forEach((value, index) => {
     for (let i = 0; i < process.argv.length; i++) {
@@ -64,9 +66,13 @@ switch (command) {
       if (val[0] === '-i' || val[0] === '--inputfile') inputfile = val[1];
       if (val[0] === '-o' || val[0] === '--outputfile') outputfile = val[1];
       if (val[0] === '-p' || val[0] === '--privkey') privkey = val[1];
+      if (val[0] === '-sys' || val[0] === '--system') system = val[1];
     }
     if (issue) break;
+    testnet = system === 'testnet';
     valErrors = '';
+
+    if (!system || !sys.includes(system)) valErrors += ` --system is required and must be one of: ${sys.join(', ')}.`;
     if (!privkey) {
       if (process.env.PRIVKEY) {
         privkey = process.env.PRIVKEY;
@@ -88,12 +94,12 @@ switch (command) {
     (async () => {
       try {
         if (!inputfile) {
-          const file = getFile('inprocess.json');
+          const file = getFile('inprocess.json', system);
           inputfile = JSON.parse(file).filename;
           if (!inputfile) throw new Error('No inputfile and missing inprocess.json file');
         }
         if (verbose) console.log(`PROCESSING ${inputfile}`);
-        const result = await utils.signTransaction(inputfile, privkey, { outputfile, verbose });
+        const result = await utils.signTransaction(inputfile, privkey, { outputfile, verbose, system });
         if (result.issue) throw new Error(`ISSUE ${result.issue}`);
         console.log(result);
       } catch (error) {
@@ -109,7 +115,8 @@ switch (command) {
     let password;
     let format;
     let issue;
-    const allowed = ['-s', '-a', '-n', '-p', '-f', '-t', '-v', '--seed', '--account', '--number', '--password', '--format', '--testnet', '--verbose'];
+    let network;
+    const allowed = ['-s', '-a', '-n', '-p', '-f', '-net', '-v', '--seed', '--account', '--number', '--password', '--format', '--network', '--verbose'];
     if (verbose) console.log('ARGUMENT COUNT=', process.argv.length);
     for (let i = 0; i < process.argv.length; i++) {
       const val = process.argv[i].split('=');
@@ -124,10 +131,16 @@ switch (command) {
       if (val[0] === '-n' || val[0] === '--number') number = val[1];
       if (val[0] === '-p' || val[0] === '--password') password = val[1];
       if (val[0] === '-f' || val[0] === '--format') format = val[1];
-      if (val[0] === '-t' || val[0] === '--testnet') testnet = true;
+      if (val[0] === '-net' || val[0] === '--network') network = val[1] || 'missing value';
     }
     if (issue) break;
+    testnet = network === 'testnet';
     valErrors = '';
+
+    if (network && network !== 'mainnet' && network !== 'testnet') {
+      console.log('Errors found. Exiting. --network must be either mainnet or testnet. If not present default is mainnet.');
+      process.exit();
+    }
     if (!seed) {
       seed = prompt('Enter the BIP39 seed phrase: ');
     }
@@ -141,7 +154,6 @@ switch (command) {
     } else {
       valErrors = '';
     }
-    if (!testnet) testnet = 0;
 
     (async () => {
       try {

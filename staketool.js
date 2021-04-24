@@ -40,11 +40,11 @@ if (commands.indexOf(command) === -1 || command === 'help' || command === '--hel
 if (verbose) console.log(`COMMAND ${command}`);
 
 const displayArg = (val) => {
-  const status = val[1] || (val[0] === '--testnet' || val[0] === '--verbose' || val[0] === '-t' || val[0] === '-v' ? 'true' : 'missing');
+  const status = val[1] || (val[0] === '--verbose' || val[0] === '-v' ? 'true' : 'missing or incorrect');
   console.log(`ARG ${val[0]} = ${status}`);
 };
 
-
+const sys = ['super', 'secure', 'testnet'];
 // argument processing
 let stake;
 let payaddress;
@@ -53,12 +53,14 @@ let outputfile;
 let testnet;
 let inputfile;
 let valErrors = '';
+let system;
 
 switch (command) {
   case 'createstakeverification': { // Step 1a & 1b
     let issue;
     let extrazen;
-    const allowed = ['-s', '-p', '-m', '-o', '-t', '-v', '-ez', '--stake', '--payaddress', '--method', '--outputfile', '--testnet', '--verbose', '--extrazen'];
+    const short = ['-s', '-p', '-m', '-o', '-sys', '-v', '-ez'];
+    const allowed = short.concat(['--stake', '--payaddress', '--method', '--outputfile', '--system', '--verbose', '--extrazen']);
     for (let i = 0; i < process.argv.length; i++) {
       const val = process.argv[i].split('=');
       if (i > 2 && verbose) displayArg(val);
@@ -71,17 +73,18 @@ switch (command) {
       if (val[0] === '-p' || val[0] === '--payaddress') payaddress = val[1];
       if (val[0] === '-m' || val[0] === '--method') method = val[1];
       if (val[0] === '-o' || val[0] === '--outputfile') outputfile = val[1];
-      if (val[0] === '-t' || val[0] === '--testnet') testnet = true;
+      if (val[0] === '-sys' || val[0] === '--system') system = val[1];
       if (val[0] === '-ez' || val[0] === '--extrazen') extrazen = Number(val[1]);
     }
     if (issue) break;
-
+    testnet = system === 'testnet';
     // default if not set
     if (!method) method = 'tool';
 
     // validate arguments
     valErrors = '';
-    if (!stake) valErrors += 'Missing stake.';
+    if (!system || !sys.includes(system)) valErrors += ` --system is required and must be one of: ${sys.join(', ')}.`;
+    if (!stake) valErrors += ' Missing stake.';
     if (!payaddress) valErrors += ' Missing payaddress.';
     if (method && (method !== 'instructions' && method !== 'tool' && method !== 'zen-cli')) valErrors += '  Method unknown.';
     if (extrazen) {
@@ -100,12 +103,12 @@ switch (command) {
       try {
         // returns an object with amount and filepath
         let txresult;
-        const result = await steps.stakeVerification(stake, payaddress, { testnet, verbose, outputfile, method, extrazen });
+        const result = await steps.stakeVerification(stake, payaddress, { testnet, verbose, outputfile, method, extrazen, system });
         if (!result) throw new Error(`stake verification did not complete properly for ${stake}`);
         if (result.issue) throw new Error(`ISSUE ${result.issue}`);
         if (verbose) console.log('stakeverification= ', result);
         if (method === 'zen-cli' || method === 'tool') {
-          txresult = await steps.buildTx(result, method, { testnet, outputfile, verbose });
+          txresult = await steps.buildTx(result, method, { testnet, outputfile, verbose, system });
           if (verbose) console.log('verificationtransaction= ', txresult);
           if (txresult.issue) throw new Error(`ISSUE ${txresult.issue}`);
         }
@@ -122,7 +125,8 @@ switch (command) {
     let txid;
     let signedtxhex;
     let issue;
-    const allowed = ['-a', '-tx', '-s', '-i', '-o', '-t', '-v', '--apikey', '--txid', '--signedtxhex', '--inputfile', '--outputfile', '--testnet', '--verbose'];
+    const short = ['-a', '-tx', '-s', '-i', '-o', '-sys', '-v'];
+    const allowed = short.concat(['--apikey', '--txid', '--signedtxhex', '--inputfile', '--outputfile', '--system', '--verbose']);
     if (verbose) console.log('ARGUMENT COUNT=', process.argv.length);
     for (let i = 0; i < process.argv.length; i++) {
       const val = process.argv[i].split('=');
@@ -137,15 +141,18 @@ switch (command) {
       if (val[0] === '-s' || val[0] === '--signedtxhex') signedtxhex = val[1];
       if (val[0] === '-i' || val[0] === '--inputfile') inputfile = val[1];
       if (val[0] === '-o' || val[0] === '--outputfile') outputfile = val[1];
-      if (val[0] === '-t' || val[0] === '--testnet') testnet = true;
+      if (val[0] === '-sys' || val[0] === '--system') system = val[1];
     }
     if (issue) break;
+    testnet = system === 'testnet';
     valErrors = '';
+
+    if (!system || !sys.includes(system)) valErrors += ` --system is required and must be one of: ${sys.join(', ')}.`;
     if (!apikey) {
       if (process.env.APIKEY) {
         apikey = process.env.APIKEY;
       } else {
-        valErrors += 'Missing apikey. ';
+        valErrors += ' Missing apikey. ';
       }
     }
     if (signedtxhex && txid) valErrors += 'Do not use --txid with --signedtxhex. ';
@@ -160,13 +167,13 @@ switch (command) {
     (async () => {
       try {
         if (!inputfile) {
-          const file = getFile('inprocess.json');
+          const file = getFile('inprocess.json', system);
           inputfile = JSON.parse(file).filename;
           if (!inputfile) throw new Error('No inputfile and missing inprocess.json file');
         }
         if (verbose) console.log(`PROCESSING ${inputfile}`);
         //
-        const stakefile = getFile(inputfile);
+        const stakefile = getFile(inputfile, system);
         const stakeObj = JSON.parse(stakefile);
 
         const resultCheck = steps.checkForTxidOrHex(stakeObj, txSources, { verbose });
@@ -183,7 +190,7 @@ switch (command) {
         } else if (resultCheck.status === 'sent') {
           stakeObj.txid = resultCheck.txid;
         }
-        const resultSendVer = await steps.sendVerification(apikey, stakeObj, inputfile, { outputfile, testnet, verbose });
+        const resultSendVer = await steps.sendVerification(apikey, stakeObj, inputfile, { outputfile, testnet, verbose, system });
         if (resultSendVer.issue) throw new Error(`ISSUE ${resultSendVer.issue}`);
         console.log(`${resultSendVer.msg} ${resultSendVer.status ? `Status: ${resultSendVer.status}` : ''}`);
       } catch (error) {
@@ -196,7 +203,7 @@ switch (command) {
     let apikey;
     let stakeid;
     let issue;
-    const allowed = ['-a', '-id', '-t', '-v', '--apikey', '--idstake', '--testnet', '--verbose'];
+    const allowed = ['-a', '-id', '-sys', '-v', '--apikey', '--idstake', '--system', '--verbose'];
     if (verbose) console.log('ARGUMENT COUNT=', process.argv.length);
     for (let i = 0; i < process.argv.length; i++) {
       const val = process.argv[i].split('=');
@@ -208,15 +215,18 @@ switch (command) {
       }
       if (val[0] === '-a' || val[0] === '--apikey') apikey = val[1];
       if (val[0] === '-id' || val[0] === '--idstake') stakeid = val[1];
-      if (val[0] === '-t' || val[0] === '--testnet') testnet = true;
+      if (val[0] === '-sys' || val[0] === '--system') system = val[1];
     }
     if (issue) break;
+    testnet = system === 'testnet';
+
     valErrors = '';
+    if (!system || !sys.includes(system)) valErrors += ` --system is required and must be one of: ${sys.join(', ')}.`;
     if (!apikey) {
       if (process.env.APIKEY) {
         apikey = process.env.APIKEY;
       } else {
-        valErrors += 'Missing apikey. ';
+        valErrors += ' Missing apikey. ';
       }
     }
     if (!stakeid) valErrors += "Missing stake id. Use 'liststakes' to retrieve a list of stakes.";
@@ -230,7 +240,7 @@ switch (command) {
 
     (async () => {
       try {
-        const result = await sendCancel(apikey, stakeid, { testnet, verbose });
+        const result = await sendCancel(apikey, stakeid, { testnet, verbose, system });
         if (result.issue) throw new Error(`ISSUE ${result.issue}`);
         console.log(result.msg);
       } catch (error) {
@@ -245,7 +255,8 @@ switch (command) {
     let status;
     let format;
     let issue;
-    const allowed = ['-a', '-s', '-st', '-f', '-t', '-v', '--apikey', '--stake', '--status', '--testnet', '--verbose', '--format'];
+    const short = ['-a', '-s', '-st', '-f', '-sys', '-v'];
+    const allowed = short.concat(['--apikey', '--stake', '--status', '--system', '--verbose', '--format']);
     if (verbose) console.log('ARGUMENT COUNT=', process.argv.length);
     for (let i = 0; i < process.argv.length; i++) {
       const val = process.argv[i].split('=');
@@ -259,15 +270,17 @@ switch (command) {
       if (val[0] === '-s' || val[0] === '--stake') stake = val[1];
       if (val[0] === '-st' || val[0] === '--status') status = val[1];
       if (val[0] === '-f' || val[0] === '--format') format = val[1];
-      if (val[0] === '-t' || val[0] === '--testnet') testnet = true;
+      if (val[0] === '-sys' || val[0] === '--system') system = val[1];
     }
     if (issue) break;
+    testnet = system === 'testnet';
     valErrors = '';
+    if (!system || !sys.includes(system)) valErrors += ` --system is required and must be one of: ${sys.join(', ')}.`;
     if (!apikey) {
       if (process.env.APIKEY) {
         apikey = process.env.APIKEY;
       } else {
-        valErrors += 'Missing apikey. ';
+        valErrors += ' Missing apikey. ';
       }
     }
     if (format && (format !== 'json' && format !== 'list')) valErrors += 'format must be json or list.';
@@ -282,7 +295,7 @@ switch (command) {
     // query tracking server via stake API call
     (async () => {
       try {
-        const result = await listStakes(apikey, { stake, status, testnet });
+        const result = await listStakes(apikey, { stake, status, testnet, system });
         if (result.issue) throw new Error(`ISSUE ${result.issue}`);
         if (format) {
           if (format === 'list') {
@@ -310,7 +323,7 @@ switch (command) {
   // query explorer for stake balance
   case 'getbalance': {
     let issue;
-    const allowed = ['-s', '-t', '-v', '--stake', '--testnet', '--verbose'];
+    const allowed = ['-s', '-sys', '-v', '--stake', '--system', '--verbose'];
     if (verbose) console.log('ARGUMENT COUNT=', process.argv.length);
     for (let i = 0; i < process.argv.length; i++) {
       const val = process.argv[i].split('=');
@@ -321,11 +334,12 @@ switch (command) {
         break;
       }
       if (val[0] === '-s' || val[0] === '--stake') stake = val[1];
-      if (val[0] === '-t' || val[0] === '--testnet') testnet = true;
+      if (val[0] === '-sys' || val[0] === '--system') system = val[1];
     }
     if (issue) break;
     valErrors = '';
-    if (!stake) valErrors += 'Missing stake address. ';
+    if (!system || !sys.includes(system)) valErrors += ` --system is required and must be one of: ${sys.join(', ')}.`;
+    if (!stake) valErrors += ' Missing stake address. ';
 
     if (valErrors.length > 1) {
       console.log(`Errors found. Exiting. ${valErrors}`);

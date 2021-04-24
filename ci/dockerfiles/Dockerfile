@@ -1,4 +1,4 @@
-ARG FLAVOR=12-alpine
+ARG FLAVOR=14-alpine
 
 FROM node:$FLAVOR
 

@@ -32,10 +32,10 @@ const signRawTx = (txObj, privkeyWIF) => {
 * @param {object} options optional key:value items
 */
 exports.signTransaction = async (input, privkey, options) => {
-  const { outputfile, verbose } = options;
+  const { outputfile, verbose, system } = options;
 
   // get the file and the raw tx
-  const contents = await getFile(input);
+  const contents = await getFile(input, system);
   if (!contents) return { issue: 'File not found' };
 
   const data = JSON.parse(contents);
@@ -46,7 +46,7 @@ exports.signTransaction = async (input, privkey, options) => {
   data.signedTx = serializedSignedTx;
   // output to file
   const filename = outputfile || input;
-  saveFile(data, filename);
+  saveFile(data, filename, system);
   const result = serializedSignedTx;
 
   return result;

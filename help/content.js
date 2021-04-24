@@ -23,31 +23,31 @@ module.exports.main = [
 
 module.exports.createstake = [
   {
-    command: '-s= | --stake=stakeaddress'.yellow,
+    command: '-s=  | --stake=stakeaddress'.yellow,
     desc: '(required) stakeaddress to verify',
   },
   {
-    command: '-p= | --payaddress=\'[]\''.yellow,
+    command: '-p=  | --payaddress=\'[]\''.yellow,
     desc: '(required) JSON array of payaddress objects, see NOTES',
   },
   {
-    command: '-m= | --method=tool|zen-cli|instructions'.yellow,
+    command: '-sys=| --system=super|secure|testnet'.yellow,
+    desc: '(required) tracking system must be: super, secure, or testnet',
+  },
+  {
+    command: '-m=  | --method=tool|zen-cli|instructions'.yellow,
     desc: '(optional) [default: tool] method to use to create and sign the transaction, see NOTES',
   },
   {
-    command: '-o= | --outputfile=path/filename'.yellow,
-    desc: '(optional) [default: ./verificationfiles/<stakeFirst8Chars>_<satoshis>.json] override default filename or path/filename',
+    command: '-o=  | --outputfile=path/filename'.yellow,
+    desc: '(optional) [default: ./verificationfiles/<system>/<stakeFirst8Chars>_<satoshis>.json] override default filename or path/filename',
   },
   {
-    command: '-ez=| --extrazen=zen'.yellow,
+    command: '-ez= | --extrazen=zen'.yellow,
     desc: '(optional) an amount in zen to add to the verification transaction, see NOTES',
   },
   {
-    command: '-t  | --testnet'.yellow,
-    desc: '(optional) use for interacting with testnet network and tracking system',
-  },
-  {
-    command: '-v  | --verbose'.yellow,
+    command: '-v   | --verbose'.yellow,
     desc: '(optional) displays additional messages to help with troubleshooting',
   },
 ];
@@ -72,9 +72,17 @@ module.exports.createstakeNotes = [
     desc: '',
   },
   {
+    command: 'Tracking System',
+    desc: 'The system where the stake address will be used: super, secure, or testnet.  A stake address cannot be used for both secure and super node systems.',
+  },
+  {
+    command: '',
+    desc: '',
+  },
+  {
     command: 'Method:',
     desc: 'Option "tool" creates a raw transaction to be used by the tool (using zencashjs) and returns transaction and verification data '
-    + 'to the tracking file. Signtxtool can be used to sign the transaction with the private key of the stake address.',
+      + 'to the tracking file. Signtxtool can be used to sign the transaction with the private key of the stake address.',
   },
   {
     command: '',
@@ -99,32 +107,32 @@ module.exports.createstakeNotes = [
 
 module.exports.sendtx = [
   {
-    command: '-a= | --apikey=apisubkey'.yellow,
+    command: '-a=  | --apikey=apisubkey'.yellow,
     desc: '(required) a Super Node API sub key. Environment variable APIKEY can be used instead.',
   },
   {
-    command: '-i= | --inputfile=path/filename'.yellow,
+    command: '-sys=| --system=super|secure|testnet'.yellow,
+    desc: '(required) tracking system where stake is used',
+  },
+  {
+    command: '-i=  | --inputfile=path/filename'.yellow,
     desc: '(optional) [default: ./verificationfiles/<stakeFirst8Chars>_<satoshis>.json] override default input file from previous steps',
   },
   {
-    command: '-s= | --signedtxhex=mysignedtxhex'.yellow,
+    command: '-s=  | --signedtxhex=mysignedtxhex'.yellow,
     desc: '(optional) [default: parsed from inputfile] hexadecimal signed serialized raw transaction, '
       + 'this is the output from a zen-cli signrawtransaction command',
   },
   {
-    command: '-tx=| --txid=transactionidhex'.yellow,
+    command: '-tx= | --txid=transactionidhex'.yellow,
     desc: '(optional) the transaction id of a signed transaction that has already been broadcasted to the network',
   },
   {
-    command: '-o= | --outputfile=path/filename'.yellow,
+    command: '-o=  | --outputfile=path/filename'.yellow,
     desc: '(optional) [default: ./verificationfiles/<stakeFirst8Chars>_<satoshis>.json] override default filename or path/filename',
   },
   {
-    command: '-t  | --testnet'.yellow,
-    desc: '(optional) use for interacting with testnet network and tracking system',
-  },
-  {
-    command: '-v  | --verbose'.yellow,
+    command: '-v   | --verbose'.yellow,
     desc: '(optional) displays additional messages to help with troubleshooting',
   },
 ];
@@ -162,27 +170,27 @@ module.exports.sendtxNotes = [
 
 module.exports.liststakes = [
   {
-    command: '-a= | --apikey=apisubkey'.yellow,
+    command: '-a=  | --apikey=apisubkey'.yellow,
     desc: '(required) a Super Node API sub key. Environment variable APIKEY can be used instead.',
   },
   {
-    command: '-s= | --stake=stakeaddress'.yellow,
+    command: '-sys=| --system=super|secure|testnet'.yellow,
+    desc: '(required) tracking system where stake is used',
+  },
+  {
+    command: '-s=  | --stake=stakeaddress'.yellow,
     desc: '(optional) filter by single stakeaddress',
   },
   {
-    command: '-st=| --status=confirming|verified|cancelled|active|replaced|failed|all'.yellow,
+    command: '-st= | --status=confirming|verified|cancelled|active|replaced|failed|all'.yellow,
     desc: '(optional) filter by status',
   },
   {
-    command: '-f= | --format=json|list'.yellow,
+    command: '-f=  | --format=json|list'.yellow,
     desc: '(optional) [default: json] format the output. Displays either JSON or a list of one stake with details per console line',
   },
   {
-    command: '-t  | --testnet'.yellow,
-    desc: '(optional) use for interacting with testnet network and tracking system',
-  },
-  {
-    command: '-v  | --verbose'.yellow,
+    command: '-v   | --verbose'.yellow,
     desc: '(optional) displays additional messages to help with troubleshooting',
   },
 ];
@@ -193,15 +201,15 @@ module.exports.liststakesNotes = [
 
 module.exports.getbalance = [
   {
-    command: '-s= | --stake=stakeaddress'.yellow,
+    command: '-s=  | --stake=stakeaddress'.yellow,
     desc: '(required) the stakeaddress to show the balance of',
   },
   {
-    command: '-t  | --testnet'.yellow,
-    desc: '(optional) use for interacting with testnet network',
+    command: '-sys=| --system=super|secure|testnet'.yellow,
+    desc: '(required) tracking system where stake is used',
   },
   {
-    command: '-v  | --verbose'.yellow,
+    command: '-v   | --verbose'.yellow,
     desc: '(optional) displays additional messages to help with troubleshooting',
   },
 ];
@@ -209,19 +217,19 @@ module.exports.getbalance = [
 
 module.exports.cancelstake = [
   {
-    command: '-a= | --apikey=apisubkey'.yellow,
+    command: '-a=  | --apikey=apisubkey'.yellow,
     desc: '(required) a Super Node API sub key. Environment variable APIKEY can be used instead.',
   },
   {
-    command: '-id=| --idstake=stakeid'.yellow,
+    command: '-id= | --idstake=stakeid'.yellow,
     desc: '(required) stake id to cancel',
   },
   {
-    command: '-t  | --testnet'.yellow,
-    desc: '(optional) use for interacting with testnet tracking system',
+    command: '-sys=| --system=super|secure|testnet'.yellow,
+    desc: '(required) tracking system where stake is used',
   },
   {
-    command: '-v  | --verbose'.yellow,
+    command: '-v   | --verbose'.yellow,
     desc: '(optional) displays additional messages to help with troubleshooting',
   },
 ];

@@ -52,12 +52,11 @@ if [ ! -z "${TRAVIS_TAG}" ]; then
   fi
 fi
 
-# set default shell for npm
-npm config set script-shell "$(which bash)"
-
-# set binary extension on windows
+# set binary extension and default shell on windows
+# https://github.com/npm/npm/issues/9420
 if [ "${TRAVIS_OS_NAME}" = "windows" ]; then
   export EXT=".exe"
+  npm config set script-shell "$(which bash)"
 fi
 
 # unset credentials if not publishing

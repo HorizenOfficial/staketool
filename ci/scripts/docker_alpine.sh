@@ -10,4 +10,4 @@ export PKG_CACHE_PATH_HOST="${PKG_CACHE_PATH}"
 export PKG_CACHE_PATH=/home/node/.pkgcache
 
 docker run --rm -u "$(id -u)":"$(id -g)" -e IGNORE_AUDIT -e PKG_CACHE_PATH -v "${PKG_CACHE_PATH_HOST}":"${PKG_CACHE_PATH}" \
-  -v "${TRAVIS_BUILD_DIR}:/build" --tmpfs /tmp zencash/staketool:latest /build/ci/scripts/build_alpine.sh
+  -v "${TRAVIS_BUILD_DIR}:/build" zencash/staketool:latest /build/ci/scripts/build_alpine.sh

@@ -15,5 +15,5 @@ exports.config = {
     defaultFee: 0.0001,
   },
   savePath: './verificationfiles',
-  instructionslink: 'https://horizenofficial.atlassian.net/wiki/spaces/ZEN/pages/1458667521/Staketool+-+Intro+Setup',
+  instructionslink: 'https://horizenofficial.atlassian.net/wiki/spaces/ZEN/pages/2127101965',
 };

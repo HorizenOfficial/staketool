@@ -60,7 +60,7 @@
     "npm-package-json-lint": "^5.1.0",
     "npm-package-json-lint-config-default": "^3.0.0",
     "pkg": "^5.0.0",
-    "shelljs": "^0.8.4"
+    "shelljs": "^0.8.5"
   },
   "scripts": {
     "test": "npm run lint && npm run lint:package && npm run audit:process",
